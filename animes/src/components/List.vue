@@ -6,12 +6,12 @@
       </div>
       <div class="list-right">
         <div class="list-line0">
-          <i :class="['list-rating','list-rating-'+ Math.floor(anime.rating.value) ]"></i><span class="list-lrating">{{anime.lrating}}</span><span class="list-title">{{anime.title}}</span> <span class="list-year">（{{anime.year}}）</span>
+          <i :class="['list-rating','list-rating-'+ Math.floor(anime.rating.value) ]"></i><span class="list-lrating">{{anime.lrating}}</span><span class="list-title"v-html="anime.title"></span> <span class="list-year">（{{anime.year}}）</span>
         </div>
-        <div class="list-allTitle">{{anime.line1}}</div>
+        <div class="list-allTitle" v-html="anime.line1"></div>
         <div v-html="anime.line2"></div>
-        <div>{{anime.line3}}</div>
-        <div>{{anime.line4}}</div>
+        <div v-html="anime.line3"></div>
+        <div v-html="anime.line4"></div>
       </div>
     </div>
   </div>
@@ -25,12 +25,23 @@
         var animes = JSON.parse(JSON.stringify(this.animes))
         animes.map(anime => {
 
+
+          let query = this.$route.query
+          let keyword = query.keyword ? query.keyword.replace(/[\*\.\?\+\$\^\[\]\(\)\{\}\|\\\/]/g,'') : ''
+          let reg = new RegExp(keyword, 'ig')
+          let change = '<span class="list-keyword">' + keyword + '</span>'
+
           anime.lrating = ' ' + anime.rating.value + '分/' + anime.rating.count + '评 '
 
           anime.line1 = ''
           if (anime.allTitle) anime.line1 += anime.allTitle
           if (anime.allTitle && anime.info['又名']) anime.line1 += ' / '
           if (anime.info['又名']) anime.line1 += anime.info['又名']
+
+          if(query.keyword && (query.range == 'title' || query.range == 'default' || query.range == 'all')) {
+            anime.title = anime.title.replace(reg, change)
+            anime.line1 = anime.line1.replace(reg, change)
+          }
 
           anime.line2 = ''
           if (anime.info['导演']) anime.line2 += '导演：' + anime.info['导演']
@@ -40,6 +51,12 @@
           anime.line3 = ''
           if (anime.info['主演']) anime.line3 += '声优：' + anime.info['主演']
 
+          if(query.keyword && (query.range == 'person' || query.range == 'default' || query.range == 'all')) {
+            anime.line2 = anime.line2.replace(reg, change)
+            anime.line3 = anime.line3.replace(reg, change)
+          }          
+
+
           anime.line4 = ''
           if (anime.info['集数']) anime.line4 += parseInt(anime.info['集数']) + '话 / '
           if (anime.info['单集片长']) anime.line4 += parseInt(anime.info['单集片长']) + '分钟 / '
@@ -48,11 +65,6 @@
         })
         return animes
       }
-    },
-    methods: {
-      log() {
-        console.log(this)
-      }
     }
   }
 </script>
@@ -60,8 +72,9 @@
 <style>
 
   .list {
-    margin-bottom: 20px;
+    margin-bottom: 30px;
     border-top: 1px solid #e0e0e0;
+    min-height: 1000px;
   }
 
   .list-item {
@@ -134,5 +147,8 @@
   .list-allTitle {
     color: #aaa;
     font-size: 12px;
+  }
+  .list-keyword {
+    color: #f25d8e;
   }
 </style>
