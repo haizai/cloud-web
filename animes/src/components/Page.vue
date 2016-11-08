@@ -14,7 +14,7 @@
         ...
       </span><span v-if="page < pages - 2" class="page-item page-num" @click="setPage(pages)">
         {{pages}}
-      </span><span v-if="page < pages - 3" class="page-item page-info page-num" @click="setPage(page - 1)">
+      </span><span v-if="page < pages - 3" class="page-item page-info page-num" @click="setPage(page + 1)">
         下一页
       </span>
     </div>

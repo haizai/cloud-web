@@ -7,7 +7,7 @@ module.exports = {
 	output:{
     path: path.resolve(__dirname, './public'),
     publicPath: '/public/',
-    filename: 'build.js'
+    filename: 'animes.js'
 	},
 
 	module:{

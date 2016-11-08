@@ -12,7 +12,7 @@
 				<ul class="info-ul">
 					<li class="info-title">搜索范围</li>
 					<li class="info-item" :class="{'info-active': range == 'default'}" @click="changeInfo('range','default')">默认</li>
-					<li class="info-item" :class="{'info-active': range == 'title'}"  @click="changeInfo('range','title')">题目</li>
+					<li class="info-item" :class="{'info-active': range == 'title'}"  @click="changeInfo('range','title')">标题</li>
 					<li class="info-item" :class="{'info-active': range == 'person'}"  @click="changeInfo('range','person')">人员</li>
 					<li class="info-item" :class="{'info-active': range == 'summary'}"  @click="changeInfo('range','summary')">简介</li>
 					<li class="info-item" :class="{'info-active': range == 'all'}"  @click="changeInfo('range','all')">全部</li>
@@ -78,6 +78,10 @@
 				this.page = 1
 				this.routerPush()
 			},
+			setPage(num) {
+				this.page = num
+				this.routerPush()
+			},
 			fetchData() {
 				this.loading = true
 				this.$http
@@ -108,10 +112,6 @@
 						range: this.range,
 						sort: this.sort
 					}})
-			},
-			setPage(num) {
-				this.page = num
-				this.routerPush()
 			},
 			changeInfo(key,val) {
 				console.log(key,val)
