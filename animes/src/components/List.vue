@@ -81,11 +81,11 @@
     height: 200px;
     overflow: hidden;
     padding: 10px;
-    box-shadow: 0px 0px 2px 0 #ccc;
+    box-shadow: 0px 1px 2px 0 #ccc;
     margin: 10px 0;
   }
   .list-item:hover {
-    box-shadow: 0px 0px 2px 0 #00a1d6;
+    box-shadow: 0 1px 6px #aaa;
   }
   .list-imgdiv {
     position: relative;
