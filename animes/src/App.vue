@@ -141,8 +141,8 @@
 		text-align: center;
 	}
 	.search-div {
-		margin-top: 40px;
-		margin-bottom: 40px;
+		margin-top: 30px;
+		margin-bottom: 30px;
 		height: 40px;
 	}
 	
@@ -193,7 +193,7 @@
 
 	.info {
 		border-top: 1px solid #e0e0e0;
-		padding: 15px 0;
+		padding: 10px 0;
 	}
 
 	.info-ul {
