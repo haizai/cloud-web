@@ -147,8 +147,8 @@
 	}
 	
 	.input-keyword {
-		margin-left: 320px;
-		width: 300px;
+		margin-left: 260px;
+		width: 400px;
 		height: 38px;
 		padding: 0 10px;
 		box-shadow: none;
@@ -163,7 +163,7 @@
 		color: #fff;
 		font-size: 18px;
 		position: absolute;
-		margin-left: 5px;
+		margin-left: 10px;
 		cursor: pointer;
 		border-radius: 4px;
 	}
@@ -173,7 +173,6 @@
 	.search-text {
 		text-align: center;
 		border-bottom: 1px solid #e0e0e0;
-		border-top: 1px solid #e0e0e0;
 		height: 500px;
 		line-height: 500px;
 		font-size: 20px;
@@ -192,8 +191,13 @@
 	}
 
 	.info {
-		border-top: 1px solid #e0e0e0;
 		padding: 10px 0;
+		background: #fff;
+		box-shadow: 0px 0px 2px 0 #ccc;
+	}
+
+	.info:hover {
+		box-shadow: 0px 0px 2px 0 #00a1d6;
 	}
 
 	.info-ul {

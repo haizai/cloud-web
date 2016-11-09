@@ -1,6 +1,6 @@
 <template>
   <div class="list">
-    <div v-for="anime in animesByComputed" class="list-item clearfix">
+    <div v-for="anime in animesByComputed" class="list-item">
       <div class="list-imgdiv">
         <img class="list-img" :src="'/img/animes/id/' + anime.id + '.jpg'" alt="">
       </div>
@@ -73,15 +73,19 @@
 
   .list {
     margin-bottom: 30px;
-    border-top: 1px solid #e0e0e0;
     min-height: 1000px;
   }
+
 
   .list-item {
     height: 200px;
     overflow: hidden;
-    padding: 10px 0;
-    border-bottom: 1px solid #e0e0e0;
+    padding: 10px;
+    box-shadow: 0px 0px 2px 0 #ccc;
+    margin: 10px 0;
+  }
+  .list-item:hover {
+    box-shadow: 0px 0px 2px 0 #00a1d6;
   }
   .list-imgdiv {
     position: relative;
