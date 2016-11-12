@@ -112,6 +112,7 @@
 						range: this.range,
 						sort: this.sort
 					}})
+				document.body.scrollTop = document.documentElement.scrollTop =0
 			},
 			changeInfo(key,val) {
 				console.log(key,val)

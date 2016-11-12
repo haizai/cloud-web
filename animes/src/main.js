@@ -8,13 +8,15 @@ import App from './App.vue'
 Vue.use(VueRouter)
 Vue.use(VueResource)
 
-const router = new VueRouter(routes)
+const router = new VueRouter({
+  routes
+})
 
 // Vue.http.options.root = '/root';
 // Vue.http.headers.common['Authorization'] = 'Basic YXBpOnBhc3N3b3Jk';
 
 new Vue({
-  el: '#app',
+  // el: '#app',
   // store,
   router,
   // http: {
@@ -24,4 +26,4 @@ new Vue({
   //   }
   // },
   render: h => h(App)
-})
+}).$mount('#app')
