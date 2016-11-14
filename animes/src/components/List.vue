@@ -2,7 +2,7 @@
   <div class="list">
     <div v-for="anime in animesByComputed" class="list-item">
       <div class="list-imgdiv">
-        <img class="list-img" :src="'/img/animes/id/' + anime.id + '.jpg'" alt="">
+        <router-link :to="{ name: 'anime', params: { id: anime.id }}"><img class="list-img" :src="'/img/animes/id/' + anime.id + '.jpg'" alt=""></router-link>
       </div>
       <div class="list-right">
         <div class="list-line0">
@@ -93,22 +93,30 @@
     box-shadow: 0 1px 6px #aaa;
   }
   .list-imgdiv {
+    border: 1px solid #fff;
+    border-radius: 4px;
     position: relative;
     float: left;
-    width: 120px;
+    width: 140px;
     height: 200px;
     margin-right: 20px;
     margin-left: 10px;
   }
+  .list-imgdiv:hover {
+    border-color: #ddd;
+    background: #f5f5f5;
+  } 
   .list-img {
     width: 120px;
     max-height: 180px;
     position: absolute;
     top: 50%;
-    transform: translate(0, -50%);
+    left: 50%;
+    transform: translate(-50%, -50%);
     border-radius: 5px;
   }
   .list-right {
+    margin-left: 170px;
     position: relative;
     line-height: 1.9
   }
@@ -138,7 +146,7 @@
 
   .list-lrating{
     position: absolute;
-    left: 151px;
+    left: 1px;
     font-size: 12px;
     top: 18px;
     color: #777;
@@ -147,6 +155,9 @@
     font-weight: bold;
     font-size: 20px;
     vertical-align: -10%;
+  }
+  .list-title:hover {
+    color: #00a1d6;
   }
   .list-year {
     color: #555;

@@ -91,7 +91,7 @@
             }
           })
           .then(res => {
-            console.log(res.body)
+            if (process.env.NODE_ENV !== 'production') console.log(res.body)
             this.animes = res.body.animes
             this.count = res.body.count
             this.noResult = this.count == 0 ? true : false
@@ -112,7 +112,6 @@
         document.body.scrollTop = document.documentElement.scrollTop =0
       },
       changeInfo(key,val) {
-        console.log(key,val)
         if (this[key] != val) {
           this[key] = val
           this.page = 1
