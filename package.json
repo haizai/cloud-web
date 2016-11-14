@@ -6,7 +6,7 @@
   "private": true,
   "license": "ISC",
   "scripts": {
-    "animes-dev": "cd animes && webpack-dev-server --inline --hot",
+    "animes-dev": "cd animes && cross-env NODE_ENV=dev webpack-dev-server --inline --hot",
     "animes-build": "cd animes && cross-env NODE_ENV=production webpack --progress --hide-modules"
   },
   "dependencies": {

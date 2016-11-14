@@ -6,12 +6,12 @@ import Animes from './views/Animes.vue'
 export default [
     {
       name: 'animes',
-      path: '/animes',
+      path: '/',
       component: Animes
     },
     {
       name: 'anime',
-      path: '/anime',
+      path: '/:id',
       component: Anime
     }
   ]

@@ -79,9 +79,10 @@
         this.routerPush()
       },
       fetchData() {
+        let url = process.env.NODE_ENV === 'production' ? '/ajax/animes' : 'http://localhost/ajax/animes'
         this.loading = true
         this.$http
-          .get('http://localhost/ajax/animes',{
+          .get(url,{
             params:{
               keyword: this.keyword,
               page: this.page,

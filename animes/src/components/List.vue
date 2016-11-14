@@ -6,7 +6,7 @@
       </div>
       <div class="list-right">
         <div class="list-line0">
-          <i :class="['list-rating','list-rating-'+ Math.floor(anime.rating.value) ]"></i><span class="list-lrating">{{anime.lrating}}</span><span class="list-title" v-html="anime.title" @click='toID(anime.id)'></span> <span class="list-year">（{{anime.year}}）</span>
+          <i :class="['list-rating','list-rating-'+ Math.floor(anime.rating.value) ]"></i><span class="list-lrating">{{anime.lrating}}</span><router-link :to="{ name: 'anime', params: { id: anime.id }}"><span class="list-title" v-html="anime.title"></span></router-link> <span class="list-year">（{{anime.year}}）</span>
         </div>
         <div class="list-allTitle" v-html="anime.line1"></div>
         <div v-html="anime.line2"></div>
@@ -65,22 +65,16 @@
         })
         return animes
       }
-    },
-    methods: {
-      toID(id) {
-        this.$http.get(
-          'http://localhost/ajax/anime', {
-            params: {id}
-          }
-        ).then(res => {
-            console.log(res.body)
-        })
-      }
     }
   }
 </script>
 
 <style>
+
+  a {
+    color:  #333;
+    text-decoration: none;
+  }
 
   .list {
     margin-bottom: 30px;
