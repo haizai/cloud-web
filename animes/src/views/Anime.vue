@@ -1,42 +1,52 @@
 <template>
   <div class="cantainer">
-    <!-- <h1 @click='log'>anime</h1> -->
+<!--     <h1 @click='log'>anime</h1> -->
     <div v-if="anime !== null" class="anime">
       <h1 class="anime-title">{{anime.title}}</h1>
       <p class="anime-allTitle">{{anime.allTitle}}</p>
-      <div class="clearfix">   
+      <div class="anime-top">
         <div class="anime-img-div">
           <img :src="'/img/animes/id/' + anime.id + '.jpg'">
         </div>
         <div class="anime-rating">
           <p class="anime-rating-value">{{anime.rating.value}}</p>
           <p class="anime-rating-count">{{anime.rating.count}} 人评分</p>
-          <div class="anime-rating-start anime-rating-start5" :style="[{height:( anime.rating.start5 * 3) + 'px'}, {top:( 400 - anime.rating.start5 * 3) + 'px'}]"></div>
-          <div class="anime-rating-start anime-rating-start4" :style="[{height:( anime.rating.start4 * 3) + 'px'}, {top:( 400 - anime.rating.start4 * 3) + 'px'}]"></div>
-          <div class="anime-rating-start anime-rating-start3" :style="[{height:( anime.rating.start3 * 3) + 'px'}, {top:( 400 - anime.rating.start3 * 3) + 'px'}]"></div>
-          <div class="anime-rating-start anime-rating-start2" :style="[{height:( anime.rating.start2 * 3) + 'px'}, {top:( 400 - anime.rating.start2 * 3) + 'px'}]"></div>
-          <div class="anime-rating-start anime-rating-start1" :style="[{height:( anime.rating.start1 * 3) + 'px'}, {top:( 400 - anime.rating.start1 * 3) + 'px'}]"></div>
-          <span class="anime-rating-info anime-rating-info5">5星</span>
-          <span class="anime-rating-info anime-rating-info4">4星</span>
-          <span class="anime-rating-info anime-rating-info3">3星</span>
-          <span class="anime-rating-info anime-rating-info2">2星</span>
-          <span class="anime-rating-info anime-rating-info1">1星</span>
+          <p v-for="n in 5" class="anime-rating-percent" :style="styles.percent[n-1]">{{anime.rating['start'+n]}}%</p>
+          <div v-for="n in 5" class="anime-rating-start" :style="styles.start[n-1]"></div>
+          <span v-for="n in 5" class="anime-rating-info" :style="{right: (n * 58 - 25) +'px'}">{{n}}星</span>
         </div>
         <div class="anime-info">
           <p v-if="anime.info['导演']"><b>导演</b>： {{anime.info['导演']}}</p>
           <p v-if="anime.info['编剧']"><b>编剧</b>： {{anime.info['编剧']}}</p>
           <p v-if="anime.info['主演']"><b>声优</b>： {{anime.info['主演']}}</p>
+          <p v-if="anime.info['季数']"><b>季数</b>： {{parseInt(anime.info['季数']) + ' 季'}}</p>
           <p v-if="anime.info['集数']"><b>集数</b>： {{parseInt(anime.info['集数']) + ' 话'}}</p>
           <p v-if="anime.info['单集片长']"><b>单集片长</b>： {{parseInt(anime.info['单集片长']) + ' 分钟'}}</p>
           <p v-if="anime.info['首播']"><b>首播</b>： {{anime.info['首播']}}</p>
         </div>
       </div>
+      <p class="anime-item-title">剧情简介</p>
+      <div class="anime-summary">{{anime.summary}}</div>
+      <p class="anime-item-title">简要评论</p>
+      <div class="anime-comments">
+        <p v-for="comment in anime.comments"><b>·</b>&nbsp;&nbsp;{{comment}}</p>
+      </div>
+      <p class="anime-item-title">精彩影评</p>
+      <div class="anime-reviews">
+        <div class="anime-review" v-for="review in anime.reviews">
+          <h3 class="anime-review-title">{{review.title}}</h3>
+          <p class="anime-review-html" v-for="line in review.html">{{line}}</p>
+        </div>
+      </div> 
+      <div class="anime-404" v-if="anime.reviews.length == 0">
+        sorry, 还没有评论
+      </div>   
     </div>
+    <div style="height:60px"></div>
   </div>
 </template>
 
 <script>
-
   export default{
     name: 'anime',
     data() {
@@ -59,6 +69,30 @@
           console.error(err)
         })      
     },
+    computed: {
+      maxRating() {
+        if (this.anime)
+        return Math.max(this.anime.rating.start1, this.anime.rating.start2, this.anime.rating.start3, this.anime.rating.start4, this.anime.rating.start5)
+      },
+      styles() {
+        let styles = {}
+        styles.start = []
+        styles.percent = []
+        for (let n = 1; n < 6; n++) {
+          styles.start.push([
+            {height: ( this.anime.rating['start'+n] * 3) + 'px'},
+            {top:( 400 - this.anime.rating['start'+n] * 3) + 'px'},
+            {right: (n * 58 - 38)+ 'px'},
+            {backgroundColor: this.anime.rating['start'+n] == this.maxRating ? '#00a1d6' : null}
+          ])
+          styles.percent.push([
+            {top:( 375 - this.anime.rating['start'+n] * 3) + 'px'}, 
+            {right: (n * 58 - 38)+ 'px'}
+          ])
+        }
+        return styles
+      }
+    },
     methods: {
       log() {
         console.log(this)
@@ -69,9 +103,6 @@
 
 <style>
   .anime {
-    font-family: "Microsoft YaHei",Arial,Helvetica,sans-serif;
-    font-size: 14px;
-    color: #333;
     line-height: 2;
   }
 
@@ -83,9 +114,13 @@
     clear: both;
     font-size: 0;
   }
-  h1, p {
+  h1, h3, p {
     margin-top: 0;
     margin-bottom: 0;
+  }
+  .anime-top {
+    height: 452px;
+
   }
   .anime-img-div {
     position: relative;
@@ -105,15 +140,17 @@
   }
   .anime-info {
     height: 450px;
+    overflow: hidden;
   }
   .anime-title {
+    margin-top: 10px;
     text-align: center;
     font-size: 30px;
   }
   .anime-allTitle {
     text-align: center;
     color: #aaa;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
     margin-top: -5px
   }
   .anime-rating {
@@ -143,18 +180,50 @@
     height: 200px;
     top: 200px;
   }
- .anime-rating-start5 { left: 20px; }
- .anime-rating-start4 { left: 78px; }
- .anime-rating-start3 { left: 136px; }
- .anime-rating-start2 { left: 194px; }
- .anime-rating-start1 { left: 252px; }
- .anime-rating-info {
+  .anime-rating-info {
     position: absolute;
     top: 400px;
- }
- .anime-rating-info5 { left: 33px; }
- .anime-rating-info4 { left: 91px; }
- .anime-rating-info3 { left: 149px; }
- .anime-rating-info2 { left: 207px; }
- .anime-rating-info1 { left: 265px; }
+  }
+  .anime-rating-percent {
+    width: 48px;
+    position: absolute;
+    text-align: center;
+    color: #888；
+  }
+  .anime-item-title {
+    background-color: #f5f5f5;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    padding: 5px 10px;
+    border-top: 1px solid #ccc;
+    height: 40px;
+    line-height: 40px;
+    font-size: 20px;
+    color: #00a1d6;
+  }
+  .anime-summary {
+    text-indent: 2em;
+    padding-left: 50px;
+    padding-right: 50px;
+  }
+  .anime-comments {
+    padding-left: 50px;
+    padding-right: 50px;
+  }
+  .anime-review {
+    padding: 50px;
+    border-bottom: 1px solid #ccc;
+  }
+  .anime-review-title {
+    text-align: center;
+    font-size: 16px;
+  }
+  .anime-review-html {
+    text-indent: 2em;
+    margin: 20px 0;
+  }
+  .anime-404 {
+    padding: 30px;
+    text-align: center
+  }
 </style>
