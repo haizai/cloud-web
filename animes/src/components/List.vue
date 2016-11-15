@@ -58,6 +58,7 @@
 
 
           anime.line4 = ''
+          if (anime.info['季数']) anime.line4 += parseInt(anime.info['季数']) + '季 / '
           if (anime.info['集数']) anime.line4 += parseInt(anime.info['集数']) + '话 / '
           if (anime.info['单集片长']) anime.line4 += parseInt(anime.info['单集片长']) + '分钟 / '
           if (anime.info['首播']) anime.line4 += anime.info['首播']
