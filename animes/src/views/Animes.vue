@@ -54,7 +54,7 @@
         keyword: this.$route.query.keyword || '',
         page: this.$route.query.page || 1,
         range: this.$route.query.range || 'default',
-        sort: this.$route.query.sort || 'default'
+        sort: this.$route.query.sort || 'count'
       }
     },
     created () {
@@ -96,6 +96,7 @@
             this.count = res.body.count
             this.noResult = this.count == 0 ? true : false
             this.loading = false
+            document.body.scrollTop = document.documentElement.scrollTop = 0
           }, err => {
             console.error(err)
           })
@@ -109,7 +110,6 @@
             range: this.range,
             sort: this.sort
           }})
-        document.body.scrollTop = document.documentElement.scrollTop =0
       },
       changeInfo(key,val) {
         if (this[key] != val) {

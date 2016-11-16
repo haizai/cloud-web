@@ -2,7 +2,11 @@
   <div class="cantainer">
 <!--     <h1 @click='log'>anime</h1> -->
     <div v-if="anime !== null" class="anime">
-      <h1 class="anime-title">{{anime.title}}</h1>
+    <h1 class="anime-title">
+      <i class="anime-i-back" title="返回上一页" @click="back"></i>
+      <i class="anime-i-random" title="随机获得一部动漫" @click="random"></i>
+      <span>{{anime.title}}</span>
+    </h1>
       <p class="anime-allTitle">{{anime.allTitle}}</p>
       <div class="anime-top">
         <div class="anime-img-div">
@@ -26,11 +30,13 @@
         </div>
       </div>
       <p class="anime-item-title">剧情简介</p>
+      <div class="anime-404" v-if="!anime.summary">sorry, 还没有简介</div>
       <div class="anime-summary">{{anime.summary}}</div>
       <p class="anime-item-title">简要评论</p>
       <div class="anime-comments">
         <p v-for="comment in anime.comments"><b>·</b>&nbsp;&nbsp;{{comment}}</p>
       </div>
+      <div class="anime-404" v-if="anime.comments.length == 0">sorry, 还没有评论</div>
       <p class="anime-item-title">精彩影评</p>
       <div class="anime-reviews">
         <div class="anime-review" v-for="review in anime.reviews">
@@ -38,9 +44,7 @@
           <p class="anime-review-html" v-for="line in review.html">{{line}}</p>
         </div>
       </div> 
-      <div class="anime-404" v-if="anime.reviews.length == 0">
-        sorry, 还没有评论
-      </div>   
+      <div class="anime-404" v-if="anime.reviews.length == 0">sorry, 还没有影评</div>
     </div>
     <div style="height:60px"></div>
   </div>
@@ -54,20 +58,13 @@
         anime: null
       }
     },
+    watch: {
+      $route() {
+        this.fetchData()
+      }
+    },
     created() {
-      let url = process.env.NODE_ENV === 'production' ? '/ajax/anime' : 'http://localhost/ajax/anime'
-      this.$http
-        .get(url,{
-          params:{
-            id: this.$route.params.id
-          }
-        })
-        .then(res => {
-          console.log(res.body)
-          this.anime = res.body
-        }, err => {
-          console.error(err)
-        })      
+      this.fetchData()    
     },
     computed: {
       maxRating() {
@@ -94,8 +91,44 @@
       }
     },
     methods: {
+      fetchData() {
+        let url = process.env.NODE_ENV === 'production' ? '/ajax/anime' : 'http://localhost/ajax/anime'
+        this.$http
+          .get(url,{
+            params:{
+              id: this.$route.params.id
+            }
+          })
+          .then(res => {
+            if (process.env.NODE_ENV !== 'production') console.log(res.body)
+            this.anime = res.body
+          }, err => {
+            console.error(err)
+          })
+      },
       log() {
         console.log(this)
+      },
+      back() {
+        this.$router.go(-1)
+      },
+      random() {
+        let url = process.env.NODE_ENV === 'production' ? '/ajax/anime' : 'http://localhost/ajax/anime'
+        this.loading = true
+        this.$http
+          .get(url,{
+            params:{
+              random: true
+            }
+          })
+          .then(res => {
+            this.$router.push({
+              name: 'anime',
+              params: { id: res.body.id }
+            })
+          }, err => {
+            console.error(err)
+          })
       }
     }
   }
@@ -106,13 +139,24 @@
     line-height: 2;
   }
 
-  .clearfix:after{
-    content: "";
-    display: block;
-    visibility: hidden;
-    height: 0;
-    clear: both;
-    font-size: 0;
+  .anime-i-back, .anime-i-random {
+    position: absolute;
+    top: 15px;
+    width: 48px;
+    height: 48px;
+    cursor: pointer;
+    border-radius: 6px;
+  }
+  .anime-i-back:hover,.anime-i-random:hover {
+    background-color: #eee;
+  }
+  .anime-i-back {
+    left: 10px;
+    background: url('/img/animes/back.png')
+  }
+  .anime-i-random {
+    right: 10px;
+    background: url('/img/animes/random.png')
   }
   h1, h3, p {
     margin-top: 0;
@@ -143,6 +187,7 @@
     overflow: hidden;
   }
   .anime-title {
+    position: relative;
     margin-top: 10px;
     text-align: center;
     font-size: 30px;
@@ -223,7 +268,7 @@
     margin: 20px 0;
   }
   .anime-404 {
-    padding: 30px;
+    padding: 20px;
     text-align: center
   }
 </style>
