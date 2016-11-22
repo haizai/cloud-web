@@ -141,13 +141,12 @@
     margin-top: 20px;
     margin-bottom: 20px;
     height: 40px;
-    display: flex;
   }
   .input-keyword {
+    display: inline-block;
+    width: calc(100% - 105px);
     margin-left: 5px;
     margin-right: 5px;
-    flex: 1;
-    width: 100%;
     height: 38px;
     padding: 0 10px;
     box-shadow: none;
@@ -155,7 +154,7 @@
     border-radius: 4px;
   }
   .input-search {
-    flex: 0;
+    position: absolute;
     height: 40px;
     padding: 0 15px;
     border: none;
