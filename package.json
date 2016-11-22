@@ -7,7 +7,9 @@
   "license": "ISC",
   "scripts": {
     "animes-dev": "cd animes && cross-env NODE_ENV=dev webpack-dev-server --inline --hot",
-    "animes-build": "cd animes && cross-env NODE_ENV=production webpack --progress --hide-modules"
+    "animes-build": "cd animes && cross-env NODE_ENV=production webpack --progress --hide-modules",
+    "m-animes-dev": "cd m-animes && cross-env NODE_ENV=dev webpack-dev-server --inline --hot",
+    "m-animes-build": "cd m-animes && cross-env NODE_ENV=production webpack --progress --hide-modules"
   },
   "dependencies": {
     "babel-core": "^6.18.0",
