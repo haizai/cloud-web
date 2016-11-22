@@ -1,23 +1,26 @@
 <template>
   <div class="list">
-    <div v-for="anime in animesByComputed" class="list-item">
-      <div class="list-imgdiv">
-        <router-link :to="{ name: 'anime', params: { id: anime.id }}"><img class="list-img" :src="'/img/animes/id/' + anime.id + '.jpg'" alt=""></router-link>
-      </div>
-      <div class="list-right">
-        <p class="list-line0 nowrap">          
-          <span class="list-title" v-html="anime.title"></span>
-          <span class="list-year">（{{anime.year}}）</span>
-        </p>
-        <div class="list-allTitle nowrap" v-html="anime.line1"></div>
-        <div>
-          <div><i :class="['list-rating','list-rating-'+ Math.floor(anime.rating.value) ]"></i><span class="list-lrating">{{anime.lrating}}</span></div>
+    <router-link v-for="anime in animesByComputed" :to="{ name: 'anime', params: { id: anime.id }}">
+      <div class="list-item">
+
+        <div class="list-imgdiv">
+          <img class="list-img" :src="'/img/animes/id/' + anime.id + '.jpg'" alt="">
         </div>
-        <div class="nowrap" v-html="anime.line2"></div>
-        <div class="nowrap" v-html="anime.line3"></div>
-        <div class="nowrap" v-html="anime.line4"></div>
+        <div class="list-right">
+          <p class="list-line0 nowrap">          
+            <span class="list-title" v-html="anime.title"></span>
+            <span class="list-year">（{{anime.year}}）</span>
+          </p>
+          <div class="list-allTitle nowrap" v-html="anime.line1"></div>
+          <div>
+            <div><i :class="['list-rating','list-rating-'+ Math.floor(anime.rating.value) ]"></i><span class="list-lrating">{{anime.lrating}}</span></div>
+          </div>
+          <div class="nowrap" v-html="anime.line2"></div>
+          <div class="nowrap" v-html="anime.line3"></div>
+          <div class="nowrap" v-html="anime.line4"></div>
+        </div>
       </div>
-    </div>
+    </router-link>
   </div>
 </template>
 
@@ -82,20 +85,17 @@
   }
 
   .list {
-    margin-bottom: 30px;
-    min-height: 1000px;
     line-height: 1.8;
+    background: #f5f5f5;
   }
 
   .list-item {
     height: 160px;
     overflow: hidden;
     padding: 0px 5px;
-    box-shadow: 0px 1px 2px 0 #ccc;
+    box-shadow: 0px 1px 4px #bbb;
     margin: 10px 0;
-  }
-  .list-item:hover {
-    box-shadow: 0 1px 6px #aaa;
+    background: #fff;
   }
   .list-imgdiv {
     border: 1px solid #fff;

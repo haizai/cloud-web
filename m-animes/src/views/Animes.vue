@@ -23,11 +23,14 @@
       </ul>
     </div>
 
-    <List :animes="animes" v-if="!noResult && !loading"/>
-    <Page :count="count" :page="page" @setPage='setPage' v-if="!noResult && !loading"/>
-    <div class="search-text" v-if="!noResult && loading">
+    <List v-for="animes in animesList" :animes="animes" v-if="!noResult"/>
+    <!-- <Page :count="count" :page="page" @setPage='setPage' v-if="!noResult && !loading"/> -->
+    <div class="loading" v-if="loading && !isEnding && !noResult">
       loading...
     </div>
+    <div class="loading" v-if="isEnding && !noResult">
+      没有了...
+    </div>    
     <div class="search-text" v-if="noResult">
       未找到相关结果。
     </div>
@@ -47,10 +50,13 @@
     },
     data() {
       return {
-        animes: [],
+        animesList: [],
         count: 0,
+        page: 1,
         noResult: false,
         loading: false,
+        isPage: false,
+        isEnding: false,
         keyword: this.$route.query.keyword || '',
         page: this.$route.query.page || 1,
         range: this.$route.query.range || 'default',
@@ -92,11 +98,31 @@
           })
           .then(res => {
             if (process.env.NODE_ENV !== 'production') console.log(res.body)
-            this.animes = res.body.animes
             this.count = res.body.count
             this.noResult = this.count == 0 ? true : false
-            this.loading = false
-            document.body.scrollTop = document.documentElement.scrollTop = 0
+          
+            if (res.body.animes.length > 0) {
+              this.loading = false
+              if (this.isPage) {
+                this.page++
+                this.animesList.push(res.body.animes)
+              } else {
+                this.page = 1
+                this.animesList = [res.body.animes]
+                this.isEnding = false
+              }
+              this.isPage = false
+              let self = this
+              document.addEventListener('scroll', e => {
+                if (document.documentElement.offsetHeight - window.screen.availHeight - document.body.scrollTop < 30 && !this.loading && !this.isEnding) {
+                  self.loading = true
+                  self.isPage = true
+                  self.fetchData()
+                }
+              })
+            } else {
+              this.isEnding = true
+            }
           }, err => {
             console.error(err)
           })
@@ -218,10 +244,6 @@
     cursor: pointer;
     flex: 1;
   }
-  .info-item:hover {
-    background: #e5e5e5
-  }
-
   .info-title {
     background: #e5e5e5;
     display:inline-block;
@@ -232,9 +254,15 @@
     border-radius: 4px;   
   }
 
-  .info-active, .info-active:hover {
+  .info-active {
     background-color: #00a1d6;
     color: #fff;
+  }
+
+  .loading {
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
   }
 
 </style>
