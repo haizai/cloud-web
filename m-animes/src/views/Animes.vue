@@ -275,11 +275,7 @@
     border-bottom: 1px solid #ccc;
     margin-bottom: 1px;
   }
-
-  .info:hover {
-    box-shadow: 0 1px 6px #aaa;
-  }
-
+  
   .info-ul {
     list-style: none;
     padding: 0;

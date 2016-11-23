@@ -3,8 +3,8 @@
 <!--     <h1 @click='log'>anime</h1> -->
     <div v-if="anime !== null" class="anime">
     <h1 class="anime-title">
-      <i class="anime-i-back" title="返回上一页" @click="back"></i>
-      <i class="anime-i-random" title="随机获得一部动漫" @click="random"></i>
+<!--       <i class="anime-i-back" title="返回上一页" @click="back"></i>
+      <i class="anime-i-random" title="随机获得一部动漫" @click="random"></i> -->
       <span>{{anime.title}}</span>
     </h1>
       <p class="anime-allTitle">{{anime.allTitle}}</p>
@@ -136,7 +136,7 @@
 
 <style>
   .anime {
-    line-height: 2;
+    line-height: 1.5;
   }
 
   .anime-i-back, .anime-i-random {
@@ -163,34 +163,32 @@
     margin-bottom: 0;
   }
   .anime-top {
-    height: 452px;
 
   }
   .anime-img-div {
     position: relative;
-    float: left;
     width: 320px;
-    margin-right: 20px;
-    height: 450px;
+    margin: 0 auto;
+    height: 460px;
     border: 1px solid #ccc;
     border-radius: 10px;
+    margin-bottom: 20px;
   }
   .anime-img-div img {
     width: 300px;
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%)
+    transform: translate(-50%, -50%);
   }
   .anime-info {
-    height: 450px;
-    overflow: hidden;
+
   }
   .anime-title {
     position: relative;
     margin-top: 10px;
     text-align: center;
-    font-size: 30px;
+    font-size: 20 px;
   }
   .anime-allTitle {
     text-align: center;
@@ -200,12 +198,12 @@
   }
   .anime-rating {
     position: relative;
-    margin-left: 20px;
+    margin: 0 auto;
     width: 320px;
-    float: right;
     height: 450px;
     border: 1px solid #ccc;
     border-radius: 10px;
+    margin-bottom: 20px;
   }
   .anime-rating-value {
     text-align: center;
@@ -248,15 +246,15 @@
   }
   .anime-summary {
     text-indent: 2em;
-    padding-left: 50px;
-    padding-right: 50px;
+    padding-left: 20px;
+    padding-right: 20px;
   }
   .anime-comments {
-    padding-left: 50px;
-    padding-right: 50px;
+    padding-left: 20px;
+    padding-right: 20px;
   }
   .anime-review {
-    padding: 50px;
+    padding: 50px 0;
     border-bottom: 1px solid #ccc;
   }
   .anime-review-title {
