@@ -24,12 +24,10 @@
     </div>
 
     <List v-for="animes in animesList" :animes="animes" v-if="state!=='loading'"/>
-    <div class="moreLoading" v-if="state == 'loading-more'">
-      <i class="iconfont icon-refresh i-loading-more"></i>
-    </div>
-    <div class="moreLoading" v-if="state == 'no-more'">
-      <i class="iconfont icon-noResult i-noMore"></i>
-      没有了...
+    <div class="moreLoading">
+      <i class="iconfont icon-refresh i-loading-more" v-if="state == 'loading-more'"></i>
+      <i class="iconfont icon-noResult i-noMore" v-if="state == 'no-more'"></i>
+      <span v-if="state == 'no-more'">没有了...</span>
     </div>    
     <div class="search-text" v-if="state=='no-result'">
       <i class="iconfont icon-noResult i-noResult"></i>
@@ -157,13 +155,21 @@
 
 <style>
 
+  @-webkit-keyframes rotate {
+    from {transform: rotate(0)}
+    to {transform: rotate(360deg)}
+  }
+  @-moz-keyframes rotate {
+    from {transform: rotate(0)}
+    to {transform: rotate(360deg)}
+  }
+  @-ms-keyframes rotate {
+    from {transform: rotate(0)}
+    to {transform: rotate(360deg)}
+  }
   @keyframes rotate {
-    from {
-      transform: rotate(0)
-    }
-    to {
-      transform: rotate(360deg)
-    }
+    from {transform: rotate(0)}
+    to {transform: rotate(360deg)}
   }
 
   .i-loading-more:before{
@@ -171,6 +177,9 @@
     text-align: center;
     font-size: 36px;
     animation: rotate 0.8s linear infinite;
+    -webkit-animation: rotate 0.8s linear infinite;
+    -moz-animation: rotate 0.8s linear infinite;
+    -ms-animation: rotate 0.8s linear infinite;
     left: 50%;
     margin-left: -18px;
   }
@@ -180,6 +189,9 @@
     text-align: center;
     font-size: 48px;
     animation: rotate 0.8s linear infinite;
+    -webkit-animation: rotate 0.8s linear infinite;
+    -moz-animation: rotate 0.8s linear infinite;
+    -ms-animation: rotate 0.8s linear infinite;
     left: 50%;
     margin-left: -24px;
   }
