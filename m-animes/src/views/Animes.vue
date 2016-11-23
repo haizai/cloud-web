@@ -220,12 +220,13 @@
     margin-bottom: 20px;
     height: 40px;
     display: flex;
+    padding: 0 5px;
   }
   .input-keyword {
     display: inline-block;
     flex: 1;
     margin-left: 5px;
-    margin-right: 5px;
+    margin-right: 10px;
     height: 38px;
     padding: 0 10px;
     box-shadow: none;
@@ -282,7 +283,7 @@
   .info-ul {
     list-style: none;
     padding: 0;
-    margin: 5px;
+    margin: 8px 5px;
     display: flex;
   }
   .info-item {
@@ -295,9 +296,11 @@
     border-radius: 4px;
     cursor: pointer;
     flex: 1;
+    background: #f5f5f5;
   }
   .info-title {
-    background: #e5e5e5;
+    background: #ffafc9;
+    color: #fff;
     display:inline-block;
     height: 30px;
     margin-right: 3px;
