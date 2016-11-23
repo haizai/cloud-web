@@ -3,6 +3,8 @@ import VueRouter from 'vue-router'
 import VueResource from 'vue-resource'
 import routes from './route-config'
 import App from './App.vue'
+
+import './css/iconfont.css'
 // import store from './vuex/store'
 
 Vue.use(VueRouter)

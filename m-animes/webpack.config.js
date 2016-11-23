@@ -25,6 +25,14 @@ module.exports = {
         test: /\.html$/,
         loader: 'vue-html'
       },
+      {
+        test: /.css$/,
+        loader: 'style-loader!css-loader'
+      },
+      { 
+        test: /\.(gif|jpg|png|woff|svg|eot|ttf)\??.*$/, 
+        loader: 'url-loader?limit=50000&name=[path][name].[ext]'
+      }
 		]
 	},
 	devServer: {

@@ -23,17 +23,21 @@
       </ul>
     </div>
 
-    <List v-for="animes in animesList" :animes="animes" v-if="!noResult"/>
-    <!-- <Page :count="count" :page="page" @setPage='setPage' v-if="!noResult && !moreLoading"/> -->
-    <div class="moreLoading" v-if="moreLoading && !isEnding && !noResult">
-      Loading...
+    <List v-for="animes in animesList" :animes="animes" v-if="state!=='loading'"/>
+    <div class="moreLoading" v-if="state == 'loading-more'">
+      <i class="iconfont icon-refresh i-loading-more"></i>
     </div>
-    <div class="moreLoading" v-if="isEnding && !noResult">
+    <div class="moreLoading" v-if="state == 'no-more'">
+      <i class="iconfont icon-noResult i-noMore"></i>
       没有了...
     </div>    
-    <div class="search-text" v-if="noResult">
+    <div class="search-text" v-if="state=='no-result'">
+      <i class="iconfont icon-noResult i-noResult"></i>
       未找到相关结果。
     </div>
+    <div class="search-text" v-if="state == 'loading'">
+      <i class="iconfont icon-refresh i-loading"></i>
+    </div>    
   </div>
 </template>
 
@@ -53,14 +57,11 @@
         animesList: [],
         count: 0,
         page: 1,
-        noResult: false,
-        moreLoading: false,
-        isPage: false,
-        isEnding: false,
+        state: 'loading',
         keyword: this.$route.query.keyword || '',
         page: this.$route.query.page || 1,
         range: this.$route.query.range || 'default',
-        sort: this.$route.query.sort || 'count'
+        sort: this.$route.query.sort || 'count',
       }
     },
     created () {
@@ -76,6 +77,9 @@
       }
     },
     methods: {
+      log() {
+        console.log(this)
+      },
       search() {
         this.page = 1
         this.routerPush()
@@ -86,7 +90,14 @@
       },
       fetchData() {
         let url = process.env.NODE_ENV === 'production' ? '../../ajax/animes' : 'http://localhost/ajax/animes'
-        this.moreLoading = true
+        let self = this
+        function scrollEvent(e) {
+          if (document.documentElement.offsetHeight - window.screen.availHeight - document.body.scrollTop < 20 && self.state == 'normal') {
+            self.page++
+            self.state = 'loading-more'
+            self.fetchData()
+          }
+        }
         this.$http
           .get(url,{
             params:{
@@ -99,35 +110,30 @@
           .then(res => {
             if (process.env.NODE_ENV !== 'production') console.log(res.body)
             this.count = res.body.count
-            this.noResult = this.count == 0 ? true : false
-          
+            if (this.count == 0) {
+              this.state = 'no-result'
+              this.animesList = []
+              return
+            }
             if (res.body.animes.length > 0) {
-              this.moreLoading = false
-              if (this.isPage) {
-                this.animesList.push(res.body.animes)
-              } else {
-                this.page = 1
+              if (this.state=='loading') {
                 this.animesList = [res.body.animes]
-                this.isEnding = false
+              } else {
+                this.animesList.push(res.body.animes)
               }
-              this.isPage = false
-              let self = this
-              document.addEventListener('scroll', e => {
-                if (document.documentElement.offsetHeight - window.screen.availHeight - document.body.scrollTop < 30 && !this.moreLoading && !this.isEnding) {
-                  self.moreLoading = true
-                  self.isPage = true
-                  this.page++
-                  self.fetchData()
-                }
-              })
+              
+              this.state = 'normal'
+              document.addEventListener('scroll', scrollEvent)
             } else {
-              this.isEnding = true
+              this.state = 'no-more'
+              document.removeEventListener('scroll',scrollEvent)
             }
           }, err => {
             console.error(err)
           })
       },
       routerPush() {
+        this.state = 'loading'
         this.$router.push({
           name:'animes', 
           query: { 
@@ -151,6 +157,39 @@
 
 <style>
 
+  @keyframes rotate {
+    from {
+      transform: rotate(0)
+    }
+    to {
+      transform: rotate(360deg)
+    }
+  }
+
+  .i-loading-more:before{
+    position: absolute;
+    text-align: center;
+    font-size: 36px;
+    animation: rotate 0.8s linear infinite;
+    left: 50%;
+    margin-left: -18px;
+  }
+
+  .i-loading:before{
+    position: absolute;
+    text-align: center;
+    font-size: 48px;
+    animation: rotate 0.8s linear infinite;
+    left: 50%;
+    margin-left: -24px;
+  }
+  .i-noResult:before {
+    font-size: 25px;
+    vertical-align: -3px;
+  }
+  .i-noMore:before {
+    vertical-align: -1px;
+  }
   body {
     font-family: "Microsoft YaHei",Arial,Helvetica,sans-serif;
     font-size: 13px;
@@ -200,11 +239,9 @@
   }
   .search-text {
     text-align: center;
-    border-bottom: 1px solid #e0e0e0;
-    height: 500px;
-    line-height: 500px;
+    height: 300px;
+    line-height: 300px;
     font-size: 20px;
-    margin-bottom: 500px;
   }
   input {
     font-family: "Microsoft YaHei",Arial,Helvetica,sans-serif;
