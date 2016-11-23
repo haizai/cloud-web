@@ -24,11 +24,11 @@
     </div>
 
     <List v-for="animes in animesList" :animes="animes" v-if="!noResult"/>
-    <!-- <Page :count="count" :page="page" @setPage='setPage' v-if="!noResult && !loading"/> -->
-    <div class="loading" v-if="loading && !isEnding && !noResult">
-      loading...
+    <!-- <Page :count="count" :page="page" @setPage='setPage' v-if="!noResult && !moreLoading"/> -->
+    <div class="moreLoading" v-if="moreLoading && !isEnding && !noResult">
+      Loading...
     </div>
-    <div class="loading" v-if="isEnding && !noResult">
+    <div class="moreLoading" v-if="isEnding && !noResult">
       没有了...
     </div>    
     <div class="search-text" v-if="noResult">
@@ -54,7 +54,7 @@
         count: 0,
         page: 1,
         noResult: false,
-        loading: false,
+        moreLoading: false,
         isPage: false,
         isEnding: false,
         keyword: this.$route.query.keyword || '',
@@ -86,7 +86,7 @@
       },
       fetchData() {
         let url = process.env.NODE_ENV === 'production' ? '../../ajax/animes' : 'http://localhost/ajax/animes'
-        this.loading = true
+        this.moreLoading = true
         this.$http
           .get(url,{
             params:{
@@ -102,9 +102,8 @@
             this.noResult = this.count == 0 ? true : false
           
             if (res.body.animes.length > 0) {
-              this.loading = false
+              this.moreLoading = false
               if (this.isPage) {
-                this.page++
                 this.animesList.push(res.body.animes)
               } else {
                 this.page = 1
@@ -114,9 +113,10 @@
               this.isPage = false
               let self = this
               document.addEventListener('scroll', e => {
-                if (document.documentElement.offsetHeight - window.screen.availHeight - document.body.scrollTop < 30 && !this.loading && !this.isEnding) {
-                  self.loading = true
+                if (document.documentElement.offsetHeight - window.screen.availHeight - document.body.scrollTop < 30 && !this.moreLoading && !this.isEnding) {
+                  self.moreLoading = true
                   self.isPage = true
+                  this.page++
                   self.fetchData()
                 }
               })
@@ -156,6 +156,7 @@
     font-size: 13px;
     color: #333;
     margin: 0;
+    background: #f5f5f5;
   }
   .cantainer {
 
@@ -220,7 +221,9 @@
   .info {
     padding: 5px 0;
     background: #fff;
-    box-shadow: 0px 0px 2px 0 #ccc;
+    box-shadow: 0px 0px 4px 0 #bbb;
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 1px;
   }
 
   .info:hover {
@@ -259,7 +262,7 @@
     color: #fff;
   }
 
-  .loading {
+  .moreLoading {
     height: 50px;
     line-height: 50px;
     text-align: center;

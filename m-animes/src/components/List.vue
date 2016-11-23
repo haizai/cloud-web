@@ -85,17 +85,17 @@
   }
 
   .list {
-    line-height: 1.8;
-    background: #f5f5f5;
+    line-height: 1.9;
   }
 
   .list-item {
     height: 160px;
     overflow: hidden;
-    padding: 0px 5px;
+    padding: 10px 10px 5px;
     box-shadow: 0px 1px 4px #bbb;
-    margin: 10px 0;
+    margin: 10px 10px;
     background: #fff;
+    border-radius: 4px;
   }
   .list-imgdiv {
     border: 1px solid #fff;
@@ -123,7 +123,7 @@
     font-size: 12px;
   }
   .list-line0 {
-    margin-top: 5px;
+    margin-top: 3px;
     margin-bottom: 2px;
   }
   .nowrap {
