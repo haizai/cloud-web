@@ -1,5 +1,6 @@
 var path = require('path')
 var webpack = require('webpack')
+var autoprefixer = require('autoprefixer')
 
 module.exports = {
 	devtool:'eval-source-map',
@@ -27,7 +28,7 @@ module.exports = {
       },
       {
         test: /.css$/,
-        loader: 'style-loader!css-loader'
+        loader: 'style-loader!css-loader!postcss-loader'
       },
       { 
         test: /\.(gif|jpg|png|woff|svg|eot|ttf)\??.*$/, 
@@ -35,6 +36,8 @@ module.exports = {
       }
 		]
 	},
+  postcss:[autoprefixer({browsers:['last 2 versions']})],
+
 	devServer: {
     historyApiFallback: true,
     noInfo: true

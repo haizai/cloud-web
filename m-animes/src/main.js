@@ -4,7 +4,11 @@ import VueResource from 'vue-resource'
 import routes from './route-config'
 import App from './App.vue'
 
-import './css/iconfont.css'
+import './css/iconfont/iconfont.css'
+import './css/animes.css'
+import './css/anime.css'
+import './css/list.css'
+
 // import store from './vuex/store'
 
 Vue.use(VueRouter)
