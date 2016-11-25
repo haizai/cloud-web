@@ -1,5 +1,6 @@
 .anime {
   line-height: 1.5;
+  background: #fff
 }
 
 .anime-i-back, .anime-i-random {
@@ -28,10 +29,12 @@ h1, h3, p {
 .anime-title {
   position: relative;
   margin-top: 10px;
+  padding: 0 10px;
   text-align: center;
   font-size: 20px;
 }
 .anime-allTitle {
+  padding: 0 10px;
   text-align: center;
   color: #aaa;
   margin-bottom: 10px;
@@ -95,9 +98,8 @@ h1, h3, p {
   color: #888；
 }
 .anime-item-title {
-  background-color: #f5f5f5;
+  text-align: center;
   margin-top: 20px;
-  margin-bottom: 5px;
   padding: 5px 10px;
   border-top: 1px solid #ccc;
   height: 40px;
@@ -121,13 +123,55 @@ h1, h3, p {
 }
 .anime-review-title {
   text-align: center;
+  margin-top: 15px;
   font-size: 16px;
 }
+.anime-review-content {
+
+}
 .anime-review-html {
-  text-indent: 2em;
   margin: 20px 0;
+}
+
+.anime-review-more {
+  text-align:center;
+  height:30px;
+  background:#f5f5f5;
+  border-radius: 4px;
+  margin-bottom: 10px;
 }
 .anime-404 {
   padding: 20px;
   text-align: center
+}
+
+@keyframes up-down {
+  0%{
+    vertical-align: 0%;
+    opacity: 0.5;
+  }
+  100%{
+    vertical-align: -30%;
+    opacity: 0.1;
+  }
+}
+
+.i-up-down:before {
+  animation: up-down 3s linear infinite;
+}
+
+.i-left:before {
+  font-size: 20px;
+  float: left;
+  vertical-align: 2%;
+  color: #888;
+  margin-right: 10px;
+}
+
+.i-random:before {
+  font-size: 20px;
+  float: right;
+  vertical-align: 2%;
+  color: #888;
+  margin-left: 10px;
 }

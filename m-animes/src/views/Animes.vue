@@ -42,13 +42,11 @@
 <script>
 
   import List from '../components/List.vue'
-  import Page from '../components/Page.vue'
 
   export default {
     name: 'animes',
     components: {
-      List,
-      Page
+      List
     },
     data() {
       return {

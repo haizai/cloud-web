@@ -1,10 +1,13 @@
 <template>
   <div class="cantainer">
 <!--     <h1 @click='log'>anime</h1> -->
+    <div class="search-text" v-if="anime == null">
+      <i class="iconfont icon-refresh i-loading"></i>
+    </div> 
     <div v-if="anime !== null" class="anime">
     <h1 class="anime-title">
-<!--       <i class="anime-i-back" title="返回上一页" @click="back"></i>
-      <i class="anime-i-random" title="随机获得一部动漫" @click="random"></i> -->
+      <i class="iconfont icon-Left i-left" @click="back"></i>
+      <i class="iconfont icon-random i-random" @click="random"></i>
       <span>{{anime.title}}</span>
     </h1>
       <p class="anime-allTitle">{{anime.allTitle}}</p>
@@ -41,13 +44,21 @@
       <p class="anime-item-title">精彩影评</p>
       <div class="anime-reviews">
         <div class="anime-review" v-for="review in anime.reviews">
-          <h3 class="anime-review-title">{{review.title}}</h3>
-          <p class="anime-review-html" v-for="line in review.html">{{line}}</p>
+          <h3 class="anime-review-title" @click="logr(review.html)">{{review.title}}</h3>
+          <div class="anime-review-content">
+            <p class="anime-review-html" v-for="(line, index) in review.html" v-show="index < review.brief || review.isShow">{{line}}</p>
+          </div>
+          <div class="anime-review-more" @click="trigger(review)" v-if="review.isLong">
+            <i class="iconfont i-up-down" :class="[{'icon-up': review.isShow},{'icon-down': !review.isShow}]"></i>
+            <i class="iconfont i-up-down" :class="[{'icon-up': review.isShow},{'icon-down': !review.isShow}]"></i>
+            <i class="iconfont i-up-down" :class="[{'icon-up': review.isShow},{'icon-down': !review.isShow}]"></i>
+            <i class="iconfont i-up-down" :class="[{'icon-up': review.isShow},{'icon-down': !review.isShow}]"></i>
+            <i class="iconfont i-up-down" :class="[{'icon-up': review.isShow},{'icon-down': !review.isShow}]"></i>
+          </div>
         </div>
       </div> 
       <div class="anime-404" v-if="anime.reviews.length == 0">sorry, 还没有影评</div>
     </div>
-    <div style="height:60px"></div>
   </div>
 </template>
 
@@ -103,19 +114,35 @@
           .then(res => {
             if (process.env.NODE_ENV !== 'production') console.log(res.body)
             this.anime = res.body
+            this.anime.reviews.forEach(review => {
+              review.brief = []
+              var count = 0
+              review.html.forEach(line => {
+                if (count < 5) {
+                  review.brief++
+                } else {
+                  return
+                }
+                if (line.trim() != '') count++
+              })
+              review.isLong = (count >= 5 && review.html.length > review.brief) ? true : false
+              review.isShow = false
+            })
           }, err => {
             console.error(err)
           })
       },
-      log() {
-        console.log(this)
-      },
       back() {
         this.$router.go(-1)
       },
+      trigger(review) {
+        console.log(review)
+        review.isShow = !review.isShow
+        this.$forceUpdate()
+      },
       random() {
+        this.anime = null
         let url = process.env.NODE_ENV === 'production' ? '/ajax/anime' : 'http://localhost/ajax/anime'
-        this.loading = true
         this.$http
           .get(url,{
             params:{
