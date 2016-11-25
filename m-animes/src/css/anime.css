@@ -25,72 +25,70 @@ h1, h3, p {
   margin-top: 0;
   margin-bottom: 0;
 }
+.anime-title {
+  position: relative;
+  margin-top: 10px;
+  text-align: center;
+  font-size: 20px;
+}
+.anime-allTitle {
+  text-align: center;
+  color: #aaa;
+  margin-bottom: 10px;
+}
 .anime-top {
-
+  display: flex;
+  justify-content: space-around;
 }
 .anime-img-div {
   position: relative;
-  width: 320px;
-  margin: 0 auto;
-  height: 460px;
+  width: 150px;
+  height: 230px;
   border: 1px solid #ccc;
   border-radius: 10px;
-  margin-bottom: 20px;
 }
 .anime-img-div img {
-  width: 300px;
+  width: 140px;
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
 }
 .anime-info {
-
-}
-.anime-title {
-  position: relative;
-  margin-top: 10px;
-  text-align: center;
-  font-size: 20 px;
-}
-.anime-allTitle {
-  text-align: center;
-  color: #aaa;
-  margin-bottom: 20px;
-  margin-top: -5px
+  padding: 0 15px;
 }
 .anime-rating {
   position: relative;
-  margin: 0 auto;
-  width: 320px;
-  height: 450px;
+  width: 150px;
+  height: 230px;
   border: 1px solid #ccc;
   border-radius: 10px;
-  margin-bottom: 20px;
 }
 .anime-rating-value {
   text-align: center;
-  font-size: 70px;
-  line-height: 150px;
+  font-size: 50px;
+  line-height: 80px;
   color: #E800A4;
 }
 .anime-rating-count {
   text-align: center;
-  margin-top: -30px;
+  margin-top: -15px;
   color: #888;
 }
 .anime-rating-start {
   position: absolute;
-  width: 48px;
+  width: 24px;
   background: #888;
   height: 200px;
   top: 200px;
 }
 .anime-rating-info {
   position: absolute;
-  top: 400px;
+  top: 210px;
+  font-size: 12px;
 }
 .anime-rating-percent {
+  font-size: 12px;
   width: 48px;
   position: absolute;
   text-align: center;
@@ -99,7 +97,7 @@ h1, h3, p {
 .anime-item-title {
   background-color: #f5f5f5;
   margin-top: 20px;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   padding: 5px 10px;
   border-top: 1px solid #ccc;
   height: 40px;
@@ -109,16 +107,17 @@ h1, h3, p {
 }
 .anime-summary {
   text-indent: 2em;
-  padding-left: 20px;
-  padding-right: 20px;
+  padding-left: 15px;
+  padding-right: 15px;
 }
 .anime-comments {
-  padding-left: 20px;
-  padding-right: 20px;
+  padding-left: 15px;
+  padding-right: 15px;
 }
 .anime-review {
   padding: 50px 0;
   border-bottom: 1px solid #ccc;
+  padding: 0 15px;
 }
 .anime-review-title {
   text-align: center;

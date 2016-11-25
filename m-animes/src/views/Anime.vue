@@ -15,10 +15,12 @@
         <div class="anime-rating">
           <p class="anime-rating-value">{{anime.rating.value}}</p>
           <p class="anime-rating-count">{{anime.rating.count}} 人评分</p>
-          <p v-for="n in 5" class="anime-rating-percent" :style="styles.percent[n-1]">{{anime.rating['start'+n]}}%</p>
+          <p v-for="n in 5" class="anime-rating-percent" :style="styles.percent[n-1]">{{Math.round(anime.rating['start'+n])}}%</p>
           <div v-for="n in 5" class="anime-rating-start" :style="styles.start[n-1]"></div>
-          <span v-for="n in 5" class="anime-rating-info" :style="{right: (n * 58 - 25) +'px'}">{{n}}星</span>
+          <span v-for="n in 5" class="anime-rating-info" :style="{right: (n * 28 - 17) +'px'}">{{n}}星</span>
         </div>
+      </div>
+        <p class="anime-item-title">番剧信息</p>
         <div class="anime-info">
           <p v-if="anime.info['导演']"><b>导演</b>： {{anime.info['导演']}}</p>
           <p v-if="anime.info['编剧']"><b>编剧</b>： {{anime.info['编剧']}}</p>
@@ -28,7 +30,6 @@
           <p v-if="anime.info['单集片长']"><b>单集片长</b>： {{parseInt(anime.info['单集片长']) + ' 分钟'}}</p>
           <p v-if="anime.info['首播']"><b>首播</b>： {{anime.info['首播']}}</p>
         </div>
-      </div>
       <p class="anime-item-title">剧情简介</p>
       <div class="anime-404" v-if="!anime.summary">sorry, 还没有简介</div>
       <div class="anime-summary">{{anime.summary}}</div>
@@ -77,14 +78,14 @@
         styles.percent = []
         for (let n = 1; n < 6; n++) {
           styles.start.push([
-            {height: ( this.anime.rating['start'+n] * 3) + 'px'},
-            {top:( 400 - this.anime.rating['start'+n] * 3) + 'px'},
-            {right: (n * 58 - 38)+ 'px'},
+            {height: ( this.anime.rating['start'+n] * 1.5+1) + 'px'},
+            {top:( 210 - this.anime.rating['start'+n] * 1.5) + 'px'},
+            {right: (n * 28 - 21)+ 'px'},
             {backgroundColor: this.anime.rating['start'+n] == this.maxRating ? '#00a1d6' : null}
           ])
           styles.percent.push([
-            {top:( 375 - this.anime.rating['start'+n] * 3) + 'px'}, 
-            {right: (n * 58 - 38)+ 'px'}
+            {top:( 193 - this.anime.rating['start'+n] * 1.5) + 'px'}, 
+            {right: (n * 28 - 33)+ 'px'}
           ])
         }
         return styles
