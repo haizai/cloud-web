@@ -161,8 +161,8 @@
           })
       },
       imgLoading(anime) {
-      anime.imgLoading = true
-      this.$forceUpdate()
+        anime.imgLoading = true
+        this.$forceUpdate()
       }
     }
   }
