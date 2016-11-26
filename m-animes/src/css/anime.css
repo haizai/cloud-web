@@ -19,10 +19,6 @@
   right: 10px;
   background: url('/img/animes/random.png')
 }
-h1, h3, p {
-  margin-top: 0;
-  margin-bottom: 0;
-}
 .anime-title {
   position: relative;
   padding: 10px 10px 0;
@@ -45,6 +41,8 @@ h1, h3, p {
   height: 230px;
   border: 1px solid #ccc;
   border-radius: 10px;
+  text-align: center;
+  line-height: 230px;
 }
 .anime-img-div img {
   border-radius: 4px;
@@ -142,21 +140,32 @@ h1, h3, p {
   text-align: center
 }
 
-@keyframes up-down {
+@keyframes i-down {
   0%{
     vertical-align: 0%;
-    opacity: 0.5;
+    opacity: 0.8;
   }
   100%{
-    vertical-align: -30%;
-    opacity: 0.1;
+    vertical-align: -40%;
+    opacity: 0.4;
   }
 }
-
-.i-up-down:before {
-  animation: up-down 3s linear infinite;
+@keyframes i-up {
+  0%{
+    vertical-align: -40%;
+    opacity: 0.8;
+  }
+  100%{
+    vertical-align: 0;
+    opacity: 0.4;
+  }
 }
-
+.i-down:before {
+  animation: i-down 3s linear infinite;
+}
+.i-up:before {
+  animation: i-up 3s linear infinite;
+}
 .i-left:before {
   font-size: 20px;
   float: left;

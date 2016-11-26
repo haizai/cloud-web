@@ -13,7 +13,8 @@
       <p class="anime-allTitle">{{anime.allTitle}}</p>
       <div class="anime-top">
         <div class="anime-img-div">
-          <img :src="'/img/animes/id/' + anime.id + '.jpg'">
+          <img :src="'/img/animes/id/' + anime.id + '.jpg'" @load="imgLoading(anime)" v-show="anime.imgLoading">
+          <span>图片加载中...</span>
         </div>
         <div class="anime-rating">
           <p class="anime-rating-value">{{anime.rating.value}}</p>
@@ -49,11 +50,11 @@
             <p class="anime-review-html" v-for="(line, index) in review.html" v-show="index < review.brief || review.isShow">{{line}}</p>
           </div>
           <div class="anime-review-more" @click="trigger(review)" v-if="review.isLong">
-            <i class="iconfont i-up-down" :class="[{'icon-up': review.isShow},{'icon-down': !review.isShow}]"></i>
-            <i class="iconfont i-up-down" :class="[{'icon-up': review.isShow},{'icon-down': !review.isShow}]"></i>
-            <i class="iconfont i-up-down" :class="[{'icon-up': review.isShow},{'icon-down': !review.isShow}]"></i>
-            <i class="iconfont i-up-down" :class="[{'icon-up': review.isShow},{'icon-down': !review.isShow}]"></i>
-            <i class="iconfont i-up-down" :class="[{'icon-up': review.isShow},{'icon-down': !review.isShow}]"></i>
+            <i class="iconfont" :class="[{'icon-up': review.isShow},{'i-up': review.isShow},{'icon-down': !review.isShow},{'i-up': !review.isShow}]"></i>
+            <i class="iconfont" :class="[{'icon-up': review.isShow},{'i-up': review.isShow},{'icon-down': !review.isShow},{'i-up': !review.isShow}]"></i>
+            <i class="iconfont" :class="[{'icon-up': review.isShow},{'i-up': review.isShow},{'icon-down': !review.isShow},{'i-up': !review.isShow}]"></i>
+            <i class="iconfont" :class="[{'icon-up': review.isShow},{'i-up': review.isShow},{'icon-down': !review.isShow},{'i-up': !review.isShow}]"></i>
+            <i class="iconfont" :class="[{'icon-up': review.isShow},{'i-up': review.isShow},{'icon-down': !review.isShow},{'i-up': !review.isShow}]"></i>
           </div>
         </div>
       </div> 
@@ -114,6 +115,7 @@
           .then(res => {
             if (process.env.NODE_ENV !== 'production') console.log(res.body)
             this.anime = res.body
+            this.anime.imgLoading = false
             this.anime.reviews.forEach(review => {
               review.brief = []
               var count = 0
@@ -157,6 +159,10 @@
           }, err => {
             console.error(err)
           })
+      },
+      imgLoading(anime) {
+      anime.imgLoading = true
+      this.$forceUpdate()
       }
     }
   }

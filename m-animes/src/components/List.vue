@@ -5,7 +5,7 @@
 
         <div class="list-imgdiv">
           <img class="list-img" :src="'/img/animes/id/' + anime.id + '.jpg'" v-show="anime.imgLoading" @load="imgLoading(anime)">
-          <div class="list-img-lazyload" v-if="!anime.imgLoading">图片加载中...</div>
+          <div class="list-img-lazyload" v-if="!anime.imgLoading" >图片加载中...</div>
         </div>
         <div class="list-right">
           <p class="list-line0 nowrap">          
@@ -30,7 +30,6 @@
     props: ['animes'],
     methods: {
       imgLoading(anime) {
-        console.log(anime)
         anime.imgLoading = true
         this.$forceUpdate()
       }

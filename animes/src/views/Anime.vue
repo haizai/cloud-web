@@ -115,6 +115,7 @@
       random() {
         let url = process.env.NODE_ENV === 'production' ? '/ajax/anime' : 'http://localhost/ajax/anime'
         this.loading = true
+        this.anime = null
         this.$http
           .get(url,{
             params:{

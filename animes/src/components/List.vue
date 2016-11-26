@@ -2,7 +2,10 @@
   <div class="list">
     <div v-for="anime in animesByComputed" class="list-item">
       <div class="list-imgdiv">
-        <router-link :to="{ name: 'anime', params: { id: anime.id }}"><img class="list-img" :src="'/img/animes/id/' + anime.id + '.jpg'" alt=""></router-link>
+        <router-link :to="{ name: 'anime', params: { id: anime.id }}">
+          <img class="list-img" :src="'/img/animes/id/' + anime.id + '.jpg'" @load="imgLoading(anime)" v-show="anime.imgLoading">
+          <span>图片加载中...</span>
+        </router-link>
       </div>
       <div class="list-right">
         <div class="list-line0">
@@ -20,12 +23,18 @@
 <script>
   export default{
     props: ['animes'],
+    methods: {
+      imgLoading(anime) {
+        anime.imgLoading = true
+        this.$forceUpdate()
+      }
+    },
     computed: {
       animesByComputed() {
         var animes = JSON.parse(JSON.stringify(this.animes))
         animes.map(anime => {
 
-
+          anime.imgLoading = false
           let query = this.$route.query
           let keyword = query.keyword ? query.keyword.replace(/[\*\.\?\+\$\^\[\]\(\)\{\}\|\\\/]/g,'') : ''
           let reg = new RegExp(keyword, 'ig')
@@ -94,6 +103,8 @@
     box-shadow: 0 1px 6px #aaa;
   }
   .list-imgdiv {
+    line-height: 200px;
+    text-align: center;
     border: 1px solid #fff;
     border-radius: 4px;
     position: relative;
