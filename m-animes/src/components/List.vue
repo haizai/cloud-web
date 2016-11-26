@@ -4,7 +4,8 @@
       <div class="list-item">
 
         <div class="list-imgdiv">
-          <img class="list-img" :src="'/img/animes/id/' + anime.id + '.jpg'" alt="">
+          <img class="list-img" :src="'/img/animes/id/' + anime.id + '.jpg'" v-show="anime.imgLoading" @load="imgLoading(anime)">
+          <div class="list-img-lazyload" v-if="!anime.imgLoading">图片加载中...</div>
         </div>
         <div class="list-right">
           <p class="list-line0 nowrap">          
@@ -27,11 +28,19 @@
 <script>
   export default{
     props: ['animes'],
+    methods: {
+      imgLoading(anime) {
+        console.log(anime)
+        anime.imgLoading = true
+        this.$forceUpdate()
+      }
+    },
     computed: {
       animesByComputed() {
         var animes = JSON.parse(JSON.stringify(this.animes))
         animes.map(anime => {
 
+          anime.imgLoading = false
 
           let query = this.$route.query
           let keyword = query.keyword ? query.keyword.replace(/[\*\.\?\+\$\^\[\]\(\)\{\}\|\\\/]/g,'') : ''

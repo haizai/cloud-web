@@ -4,6 +4,9 @@
 }
 
 .i-loading-more:before{
+  display: inline-block;
+  width: 36px;
+  height: 47px;
   position: absolute;
   text-align: center;
   font-size: 36px;
@@ -13,6 +16,9 @@
 }
 
 .i-loading:before{
+  display: inline-block;
+  width: 48px;
+  height: 48px;
   position: absolute;
   text-align: center;
   font-size: 48px;
@@ -72,13 +78,9 @@ body {
   cursor: pointer;
   border-radius: 4px;
 }
-.input-search:hover {
-  background: #29AAD4;
-}
 .search-text {
   text-align: center;
-  height: 300px;
-  line-height: 300px;
+  margin-top: 100px;
   font-size: 20px;
 }
 input {

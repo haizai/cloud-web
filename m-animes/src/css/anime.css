@@ -11,9 +11,6 @@
   cursor: pointer;
   border-radius: 6px;
 }
-.anime-i-back:hover,.anime-i-random:hover {
-  background-color: #eee;
-}
 .anime-i-back {
   left: 10px;
   background: url('/img/animes/back.png')
@@ -28,8 +25,7 @@ h1, h3, p {
 }
 .anime-title {
   position: relative;
-  margin-top: 10px;
-  padding: 0 10px;
+  padding: 10px 10px 0;
   text-align: center;
   font-size: 20px;
 }
@@ -51,6 +47,7 @@ h1, h3, p {
   border-radius: 10px;
 }
 .anime-img-div img {
+  border-radius: 4px;
   width: 140px;
   position: absolute;
   top: 50%;

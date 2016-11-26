@@ -24,7 +24,7 @@
     </div>
 
     <List v-for="animes in animesList" :animes="animes" v-if="state!=='loading'"/>
-    <div class="moreLoading">
+    <div class="moreLoading" v-if="state!=='no-result' && state!=='loading'">
       <i class="iconfont icon-refresh i-loading-more" v-if="state == 'loading-more'"></i>
       <i class="iconfont icon-noResult i-noMore" v-if="state == 'no-more'"></i>
       <span v-if="state == 'no-more'">没有了...</span>
