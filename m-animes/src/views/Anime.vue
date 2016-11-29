@@ -50,11 +50,11 @@
             <p class="anime-review-html" v-for="(line, index) in review.html" v-show="index < review.brief || review.isShow">{{line}}</p>
           </div>
           <div class="anime-review-more" @click="trigger(review)" v-if="review.isLong">
-            <i class="iconfont" :class="[{'icon-up': review.isShow},{'i-up': review.isShow},{'icon-down': !review.isShow},{'i-up': !review.isShow}]"></i>
-            <i class="iconfont" :class="[{'icon-up': review.isShow},{'i-up': review.isShow},{'icon-down': !review.isShow},{'i-up': !review.isShow}]"></i>
-            <i class="iconfont" :class="[{'icon-up': review.isShow},{'i-up': review.isShow},{'icon-down': !review.isShow},{'i-up': !review.isShow}]"></i>
-            <i class="iconfont" :class="[{'icon-up': review.isShow},{'i-up': review.isShow},{'icon-down': !review.isShow},{'i-up': !review.isShow}]"></i>
-            <i class="iconfont" :class="[{'icon-up': review.isShow},{'i-up': review.isShow},{'icon-down': !review.isShow},{'i-up': !review.isShow}]"></i>
+            <i class="iconfont" :class="[{'icon-up': review.isShow},{'i-up': review.isShow},{'icon-down': !review.isShow},{'i-down': !review.isShow}]"></i>
+            <i class="iconfont" :class="[{'icon-up': review.isShow},{'i-up': review.isShow},{'icon-down': !review.isShow},{'i-down': !review.isShow}]"></i>
+            <i class="iconfont" :class="[{'icon-up': review.isShow},{'i-up': review.isShow},{'icon-down': !review.isShow},{'i-down': !review.isShow}]"></i>
+            <i class="iconfont" :class="[{'icon-up': review.isShow},{'i-up': review.isShow},{'icon-down': !review.isShow},{'i-down': !review.isShow}]"></i>
+            <i class="iconfont" :class="[{'icon-up': review.isShow},{'i-up': review.isShow},{'icon-down': !review.isShow},{'i-down': !review.isShow}]"></i>
           </div>
         </div>
       </div> 

@@ -77,7 +77,7 @@
   position: absolute;
   width: 24px;
   background: #888;
-  height: 200px;
+  height: 0px;
   top: 200px;
 }
 .anime-rating-info {
@@ -146,13 +146,13 @@
     opacity: 0.8;
   }
   100%{
-    vertical-align: -40%;
+    vertical-align: -30%;
     opacity: 0.4;
   }
 }
 @keyframes i-up {
   0%{
-    vertical-align: -40%;
+    vertical-align: -30%;
     opacity: 0.8;
   }
   100%{
@@ -161,10 +161,10 @@
   }
 }
 .i-down:before {
-  animation: i-down 3s linear infinite;
+  animation: i-down 1s linear infinite;
 }
 .i-up:before {
-  animation: i-up 3s linear infinite;
+  animation: i-up 1s linear infinite;
 }
 .i-left:before {
   font-size: 20px;
