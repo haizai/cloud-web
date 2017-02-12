@@ -11,7 +11,10 @@
     "animes-move":"cd animes && node move",
     "m-animes-dev": "cd m-animes && cross-env NODE_ENV=dev webpack-dev-server --inline --hot",
     "m-animes-build": "cd m-animes && cross-env NODE_ENV=production webpack --progress --hide-modules",
-    "m-animes-move":"cd m-animes && node move"
+    "m-animes-move":"cd m-animes && node move",
+    "user-dev": "cd user && cross-env NODE_ENV=dev webpack-dev-server --inline --hot",
+    "user-build": "cd user && cross-env NODE_ENV=production webpack --progress --hide-modules",
+    "user-move":"cd user && node move"
   },
   "dependencies": {
     "autoprefixer": "^6.5.3",
