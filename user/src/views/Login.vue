@@ -1,9 +1,18 @@
 <template>
   <div id="login">
-    <h1 @click="log()">login</h1>
-    account:<input type="text" v-model="account">
-    password:<input type="password" v-model="password">
-    <button type="button" @click="checkLogin(account,password)">submit</button>
+    <h2 class="login-head">登入Haizainai</h2>
+    <div class="login-body">
+      <div class="login-line">
+        <label>用户名</label><input type="text" v-model="account" maxlength="16">
+      </div>
+      <div class="login-line">
+        <label>密码</label><input type="password" v-model="password" maxlength="16">
+      </div>
+      <div class="login-line">
+        <div class="login-btn login-submit" @click="checkLogin(account, password)">登入</div>
+        <div class="login-btn login-reg">注册</div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -26,7 +35,8 @@
           this.$http.get(url,{params:{account,password}})
           .then(res => {
             if (res.body.state === 1) {
-              this.$http.get('http://localhost/ajax/user/getProAndCity')
+              console.log('login')
+              this.$router.push({name: 'center'})
             }
           }, err => console.error(err))
       }

@@ -5,7 +5,9 @@ import routes from './route-config'
 import App from './App.vue'
 // import store from './vuex/store'
 
-import './css/user.css'
+import './css/reset.css'
+import './css/login.css'
+import './css/center.css'
 
 Vue.use(VueRouter)
 Vue.use(VueResource)
