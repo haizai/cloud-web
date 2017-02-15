@@ -1,5 +1,5 @@
 <template>
-  <li class="index">
+  <div id="index">
     <p>
       <span class="index-account" @click="log()">{{user.account}}</span>
       <span class="index-uid">uid: <span>{{user.uid}}</span></span>
@@ -32,63 +32,12 @@
         <option v-for="city in selectedProCitys" :value="city.cityID">{{city.name}}</option>
       </select>
     </p>
-  </li>
-</template>
-
+  </div>
 </template>
 
 <script>
   import provinces from '../data/province'
   import citys from '../data/city'
-
-  // provinces.forEach(function(pro){
-  //   $('#user-pro').append('<option value="' + pro.proID + '">'+ pro.name +'</option>')
-  // })
-  // $('#user-pro').on('change',function(e){
-  //   var proID = $(this).val()
-  //   cityByProID(proID)
-  //   $.post('ajax/user/setProID',{proID: proID},function(obj){
-  //     if (obj.state == 1) {
-  //       proID == 0 ? tip('请选择省份','info') : tip('省份修改成功')
-  //     } else {
-  //       tip('省份修改失败','err')
-  //     }
-  //   })
-  // })
-  // $.get('ajax/user/getProAndCity',function(obj){
-  //   if (obj.state == 1) {
-  //     $('#user-pro').val(obj.proID)
-  //     cityByProID(obj.proID,obj.cityID)
-  //   }
-  // })
-
-  // $('#user-city').on('change',function(e){
-  //   var cityID = $(this).val()
-  //   $.post('ajax/user/setCityID',{cityID: cityID},function(obj){
-  //     if (obj.state == 1) {
-  //       cityID == 0 ? tip('请选择城市','info') : tip('城市修改成功')
-  //     } else {
-  //       tip('城市修改失败','err')
-  //     }
-  //   })
-  // })
-
-
-  function cityByProID(proID,cityID) {
-    if (proID == 0 || proID == 1 || proID == 2 || proID == 9 || proID == 27 || proID == 33 || proID == 34 ) {
-      $('#user-city').hide()
-      return
-    } 
-    $('#user-city').show().empty().append('<option value="0">请选择城市</option>')
-    citys.forEach(function(city){
-      if(city.proID == proID) {
-        $('#user-city').append('<option value="' + city.cityID + '">'+ city.name +'</option>')
-      }
-    })
-    cityID !== void 0 ? $('#user-city').val(cityID) : $('#user-city').val(0)
-  }
-
-
 
   export default {
     name: 'index',
@@ -104,8 +53,6 @@
       }
     },
     created() {
-      console.log(this)
-      console.log(provinces)
       this.$http.get(this.urlPrefix + 'getUserInCenter')
         .then((res)=>{
           if (res.body.state === 1) {

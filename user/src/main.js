@@ -8,6 +8,8 @@ import App from './App.vue'
 import './css/reset.css'
 import './css/login.css'
 import './css/center.css'
+import './css/index.css'
+import './css/record.css'
 
 Vue.use(VueRouter)
 Vue.use(VueResource)

@@ -31,17 +31,38 @@
         console.log(this)
       },
       checkLogin(account, password) {
+        tip('登入中...','info',500)
         let url = process.env.NODE_ENV === 'production' ? '/ajax/user/login' : 'http://localhost/ajax/user/login'
           this.$http.get(url,{params:{account,password}})
           .then(res => {
-            if (res.body.state === 1) {
-              console.log('login')
-              this.$router.push({name: 'center'})
+            switch (res.body.state) {
+            case 1:
+              tip('登入成功，即将自动转跳')
+              setTimeout(()=>{
+                this.$router.push({name: 'center'})
+              }, 1000)
+              break;
+            case 1001:
+              tip('用户名为空','err')
+              break;
+            case 1002:
+              tip('密码为空','err')
+              break;
+            case 1003:
+             tip('用户名不存在','err')
+              break;
+            case 1004:
+              tip('密码错误','err')
+              break;
+            case 3001:
+              tip('数据库错误','err')
+              break;
+            default:
+              tip('未知错误','err')
+              break;
             }
           }, err => console.error(err))
       }
     }
   }
 </script>
-
-

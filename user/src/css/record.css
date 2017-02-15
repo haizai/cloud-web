@@ -1,0 +1,9 @@
+#record {
+  width: 100%;
+}
+#record td {
+  border: #ccc solid 1px;
+  padding: 3px;
+  white-space: pre-line;
+  text-align: center;
+}
