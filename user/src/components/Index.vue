@@ -1,38 +1,41 @@
 <template>
-  <div id="index">
-    <p>
-      <span class="index-account" @click="log()">{{user.account}}</span>
-      <span class="index-uid">uid: <span>{{user.uid}}</span></span>
-      <span class="index-position">{{computedPosition}}</span>
-      <span class="index-btn" @click="logoff()">注销</span>
-    </p>
-    <p>注册时间： <span>{{new Date(user.registerTime).toLocaleString()}}</span></p>
-    <p>
-      个性签名：
-      <span class="index-sign-span" @click="signClick()" ref="signSpan">{{user.sign}}</span>
-      <input type="text" maxlength="30" v-model="user.sign" ref="signInput" style="display:none" @keydown.enter="$refs.signInput.blur()" @blur="signBlur()"/>
-    </p>
-    <p>
-      性别：
-      <select class="index-sex" v-model="user.msg.sex" @change="setSex()">
-        <option value="male">男性</option>
-        <option value="female">女性</option>
-        <option value="other">其它</option>
-        <option value="secret">保密</option>
-      </select>
-    </p>
-    <p class="index-location">
-      所在地：
-      <select id="index-pro" v-model="user.msg.proID" @change="setProID()">
-        <option value="0">请选择省份</option>
-        <option v-for="pro in provinces" :value="pro.proID">{{pro.name}}</option>
-      </select>
-      <select id="index-city" v-model="user.msg.cityID" v-show="user.msg.proID != 0 && user.msg.proID != 1 && user.msg.proID != 2 && user.msg.proID != 9 && user.msg.proID != 27 && user.msg.proID != 33 && user.msg.proID != 34" @change="setCityID()">
-        <option value="0">请选择城市</option>
-        <option v-for="city in selectedProCitys" :value="city.cityID">{{city.name}}</option>
-      </select>
-    </p>
-  </div>
+  <li>
+    <h2 class="content-title">首页</h2>
+    <div id="index">
+      <p>
+        <span class="index-account" @click="log()">{{user.account}}</span>
+        <span class="index-uid">uid: <span>{{user.uid}}</span></span>
+        <span class="index-position">{{computedPosition}}</span>
+        <span class="index-btn" @click="logoff()">退出登录</span>
+      </p>
+      <p>注册时间： <span>{{new Date(user.registerTime).toLocaleString()}}</span></p>
+      <p>
+        个性签名：
+        <span class="index-sign-span" @click="signClick()" ref="signSpan">{{user.sign}}</span>
+        <input type="text" maxlength="30" v-model="user.sign" ref="signInput" style="display:none;width:500px" @keydown.enter="$refs.signInput.blur()" @blur="signBlur()"/>
+      </p>
+      <p>
+        性别：
+        <select class="index-sex" v-model="user.msg.sex" @change="setSex()">
+          <option value="male">男性</option>
+          <option value="female">女性</option>
+          <option value="other">其它</option>
+          <option value="secret">保密</option>
+        </select>
+      </p>
+      <p class="index-location">
+        所在地：
+        <select id="index-pro" v-model="user.msg.proID" @change="setProID()">
+          <option value="0">请选择省份</option>
+          <option v-for="pro in provinces" :value="pro.proID">{{pro.name}}</option>
+        </select>
+        <select id="index-city" v-model="user.msg.cityID" v-show="user.msg.proID != 0 && user.msg.proID != 1 && user.msg.proID != 2 && user.msg.proID != 9 && user.msg.proID != 27 && user.msg.proID != 33 && user.msg.proID != 34" @change="setCityID()">
+          <option value="0">请选择城市</option>
+          <option v-for="city in selectedProCitys" :value="city.cityID">{{city.name}}</option>
+        </select>
+      </p>
+    </div>
+  </li>
 </template>
 
 <script>

@@ -1,0 +1,11 @@
+i {
+  display: inline-block;
+}
+.icon-refresh {
+  background:  url('../img/refresh.png') no-repeat;
+  width: 24px;
+  height: 24px;
+  margin-left: 10px;
+  vertical-align: -8%;
+  cursor: pointer;
+}

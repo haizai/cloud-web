@@ -10,6 +10,7 @@ import './css/login.css'
 import './css/center.css'
 import './css/index.css'
 import './css/record.css'
+import './css/icon.css'
 
 Vue.use(VueRouter)
 Vue.use(VueResource)

@@ -49,6 +49,7 @@
 .center-content {
   margin-left: 161px;
   padding-right: 10px;
+  min-height: 600px;
 }
 
 .content-title {

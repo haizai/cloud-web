@@ -29,6 +29,10 @@ module.exports = {
         test: /.css$/,
         loader: 'style-loader!css-loader!postcss-loader'
       },
+      { 
+        test: /\.(gif|jpg|png|woff|svg|eot|ttf)\??.*$/, 
+        loader: 'url-loader?limit=50000&name=[path][name].[ext]'
+      }
 		]
 	},
 	devServer: {

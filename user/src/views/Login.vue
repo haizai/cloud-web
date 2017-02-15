@@ -6,7 +6,7 @@
         <label>用户名</label><input type="text" v-model="account" maxlength="16">
       </div>
       <div class="login-line">
-        <label>密码</label><input type="password" v-model="password" maxlength="16">
+        <label>密码</label><input type="password" v-model="password" maxlength="16" @keydown.enter="checkLogin(account, password)">
       </div>
       <div class="login-line">
         <div class="login-btn login-submit" @click="checkLogin(account, password)">登入</div>
