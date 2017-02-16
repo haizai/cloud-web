@@ -10,7 +10,7 @@
       </div>
       <div class="login-line">
         <div class="login-btn login-submit" @click="checkLogin(account, password)">登入</div>
-        <div class="login-btn login-reg">注册</div>
+        <router-link :to="{name: 'register'}"><div class="login-btn login-reg">注册</div></router-link>
       </div>
     </div>
   </div>

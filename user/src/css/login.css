@@ -33,6 +33,35 @@
 .login-line-tip.success {
   color: #00a1d6
 }
+.password-strength {
+  position: absolute;
+  left: 63px;
+  top: 2px;
+  width: 221px;
+  height: 14px;
+  border: 1px solid #ccc;
+  text-align: center;
+  color: #fff;
+  line-height: 14px;
+}
+.password-strength-1 {
+  position: absolute;
+  width: 73px;
+  height: 14px;
+  background: #f45d90;
+}
+.password-strength-2 {
+  position: absolute;
+  width: 146px;
+  height: 14px;
+  background: #FFC125;
+}
+.password-strength-3 {
+  position: absolute;
+  width: 221px;
+  height: 14px;
+  background: #00a1d6;
+}
 .login-line label {
   display: inline-block;
   width: 80px;
@@ -52,7 +81,7 @@
   margin-left: 35px;
   margin-top: 15px;
   line-height: 40px;
-  padding: 0px 62px;
+  padding: 0px 55px;
   border-radius: 4px;
   cursor: pointer;
   font-size: 16px;
