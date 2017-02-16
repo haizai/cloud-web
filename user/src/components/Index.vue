@@ -11,7 +11,7 @@
       <p>注册时间： <span>{{new Date(user.registerTime).toLocaleString()}}</span></p>
       <p>
         个性签名：
-        <span class="index-sign-span" @click="signClick()" ref="signSpan">{{user.sign}}</span>
+        <span class="index-sign-span" @click="signClick()" ref="signSpan">{{computedSign}}</span>
         <input type="text" maxlength="30" v-model="user.sign" ref="signInput" style="display:none;width:500px" @keydown.enter="$refs.signInput.blur()" @blur="signBlur()"/>
       </p>
       <p>
@@ -81,6 +81,9 @@
         return citys.filter(city=> {
           return city.proID == this.user.msg.proID
         })
+      },
+      computedSign() {
+        return this.user.sign == '' ? '喵，你还没有个性签名！？': this.user.sign
       }
     },
     methods: {
@@ -116,13 +119,13 @@
         this.$refs.signSpan.style.display = 'inline-block'
         this.$refs.signInput.style.display = 'none'
         let sign = this.user.sign.trim()
-        if (this.lastSign === sign) {
-          tip('个性签名尚未修改','info')
-          return
-        }
         if (sign === '') {
           tip('个性签名修改失败，请勿输入空值','err')
           this.user.sign = this.lastSign
+          return
+        }
+        if (this.lastSign === sign) {
+          tip('个性签名尚未修改','info')
           return
         }
         this.$http.post(this.urlPrefix + 'setSign',{sign}).then(res=>{

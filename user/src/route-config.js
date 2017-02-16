@@ -3,6 +3,7 @@
 import User from './views/User.vue'
 import Login from './views/Login.vue'
 import Center from './views/Center.vue'
+import Register from './views/Register.vue'
 
 
 export default [
@@ -20,6 +21,11 @@ export default [
       name: 'center',
       path: '/center',
       component: Center
+    },
+    {
+      name: 'register',
+      path: '/register',
+      component: Register
     },
   ]
 

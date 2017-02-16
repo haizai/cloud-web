@@ -11,11 +11,11 @@
     <table id='record'>
       <tbody>
         <tr style="background:#f5f5f5">
-          <td>时间</td>
-          <td>方法</td>
-          <td>地址</td>
-          <td>参数</td>
-          <td>状态</td>
+          <td style="width:160px">时间</td>
+          <td style="width:40px">方法</td>
+          <td style="width:160px">地址</td>
+          <td style="width:160px">参数</td>
+          <td style="width:40px">状态</td>
           <td>其他返回</td>
         </tr>
         <tr v-for="record in filterRecords">
@@ -74,11 +74,13 @@
           obj.param = Object.keys(record.param).map(key=>{
             return key + ': ' + record.param[key]
           }).join('\n')
+          if (obj.param == '') obj.param = '无'
           obj.state = record.res.state
           delete record.res.state
           obj.res = Object.keys(record.res).map(key=>{
-            return key + ': ' + record.res[key]
+            return key + ': ' + Object.prototype.toString.call(record.res[key])
           }).join('\n')
+          if (obj.res == '') obj.res = '无'
           return obj
         }).reverse()
       },
