@@ -6,10 +6,10 @@
         <label>用户名</label><input type="text" v-model="account" maxlength="16" autocomplete="new-password">
       </div>
       <div class="login-line">
-        <label>密码</label><input type="password" v-model="password" maxlength="16" @keydown.enter="checkLogin(account, password)" autocomplete="new-password">
+        <label>密码</label><input type="password" v-model="password" maxlength="16" @keydown.enter="login()" autocomplete="new-password">
       </div>
       <div class="login-line">
-        <a href="javascript:;" class="login-btn login-submit" @click="login(account, password)">登入</a>
+        <a href="javascript:;" class="login-btn login-submit" @click="login()">登入</a>
         <a href="javascript:;" class="login-btn login-reg"  @click="$router.push({name: 'register'})">注册</a>
       </div>
     </div>
@@ -42,12 +42,9 @@
       },
     },
     methods: {
-      log() {
-        console.log(this)
-      },
-      login(account, password) {
+      login() {
         tip('登入中...','info',500)
-        this.$http.get(this.urlPrefix+'login',{params:{account,password}}).then(res => {
+        this.$http.get(this.urlPrefix+'login',{params:{account:this.account,password:this.password}}).then(res => {
           switch (res.body.state) {
             case 1:
               tip('登入成功，即将自动转跳')

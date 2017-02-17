@@ -7,8 +7,8 @@
         <li v-for="child in children" :class="{active: active == child.name}" @click="active = child.name">{{child.chinese}}</li>
       </ul>
       <ul class="center-content">
-        <Index v-show="active == 'index'" />
-        <Record v-show="active == 'record'" />
+        <Index v-if="active == 'index'" />
+        <Record v-if="active == 'record'" />
       </ul>
     </div>
   </div>
