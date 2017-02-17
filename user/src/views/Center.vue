@@ -26,6 +26,21 @@
       Index,
       Record
     },
+    created(){
+      this.$http.get(this.urlPrefix+'checkLogin').then(res => {
+        if (res.body.state == 2001) {
+          tip('请先登录','err')
+          setTimeout(()=>{
+            this.$router.push({name:'login'})
+          },500)
+        }
+      })
+    },
+    computed:{
+      urlPrefix () {
+        return process.env.NODE_ENV === 'production' ? '/ajax/user/' : 'http://localhost/ajax/user/'
+      },
+    },
     data(){
       return {
         active: 'index',

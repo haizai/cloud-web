@@ -8,3 +8,9 @@
   text-align: center;
   height: 40px;
 }
+.record-a {
+  color:#2D95B7
+}
+.record-a:hover {
+  text-decoration: underline;
+}

@@ -2,7 +2,7 @@
   "name": "cloud-web",
   "description": "个人云服务器前端部分",
   "author": "haizai",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "private": true,
   "license": "ISC",
   "scripts": {

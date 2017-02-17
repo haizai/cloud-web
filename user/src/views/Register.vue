@@ -3,11 +3,13 @@
     <h2 class="login-head">注册</h2>
     <div class="login-body">
       <div class="login-line">
-        <label>用户名</label><input type="text" v-model="account" maxlength="16" @blur="checkAccount()" placeholder="4到16位英文或数字字符">
+        <label @click="log()">用户名</label>
+        <input type="text" v-model="account" maxlength="16" @blur="checkAccount()" placeholder="4到16位英文或数字字符" autocomplete="new-password">
         <p class="login-line-tip" :class="accountClass">{{accountTip}}</p>
       </div>
       <div class="login-line">
-        <label>密码</label><input type="password" v-model="password" maxlength="16" @keyup="checkPassword()" placeholder="6到16位英文或数字字符">
+        <label>密码</label>
+        <input type="password" v-model="password" maxlength="16" @keyup="checkPassword()" placeholder="6到16位英文及数字字符" autocomplete="new-password">
         <p class="login-line-tip error" v-show="passwordStrength == 0">{{passwordTip}}</p>
         <div class="login-line-tip" :class="{error: passwordStrength == 1,success: passwordStrength > 1}"  v-show="passwordStrength > 0 ">
           密码强度：
@@ -19,7 +21,8 @@
         </div>
       </div>
       <div class="login-line">
-        <label>确认密码</label><input type="password" v-model="passwordRepeat" maxlength="16" @blur="checkPasswordRepeat()">
+        <label>确认密码</label>
+        <input type="password" v-model="passwordRepeat" maxlength="16" @blur="checkPasswordRepeat()" autocomplete="off" value="">
         <p class="login-line-tip" :class="passwordRepeatClass">{{passwordRepeatTip}}</p>
       </div>
       <div class="login-line">
@@ -47,32 +50,20 @@
         passwordRepeatTip: ''
       }
     },
+    created(){
+      this.$http.get(this.urlPrefix+'checkLogin').then(res => {
+        if (res.body.state == 2002) {
+          tip('你已登录，请先退出','err')
+          setTimeout(()=>{
+            this.$router.push({name:'center'})
+          },500)
+        }
+      })
+    },
     computed:{
       urlPrefix () {
         return process.env.NODE_ENV === 'production' ? '/ajax/user/' : 'http://localhost/ajax/user/'
       },
-    },
-    watch: {
-      // password(val, oldVal) {
-      //   if (val == '') {
-      //     this.passwordTip = '请输入密码'
-      //     this.passwordStrength = 0
-      //     return
-      //   }
-      //   if (!/^[\dA-z]*$/.test(val)) {
-      //     this.passwordTip = '密码仅限使用英文或数字'
-      //     this.passwordStrength = 0
-      //     return
-      //   }
-      //   if (val.length < 6 && val.length > 0) {
-      //     this.passwordTip = '密码应在6到16个字符之间'
-      //     this.passwordStrength = 0
-      //     return
-      //   }
-      //   this.passwordStrength = 1
-      //   if (val.length == 16) this.passwordStrength++
-      //   if (/\d/.test(val) && /[A-z]/.test(val)) this.passwordStrength++
-      // }
     },
     methods: {
       log() {
@@ -138,31 +129,36 @@
           this.passwordRepeatClass = 'error'
           return
         }
-        this.passwordRepeatTip = '两次密码一致'
+        this.passwordRepeatTip = '两次密码相同'
         this.passwordRepeatClass = 'success'
       },
       register() {
         this.checkAccount()
         this.checkPassword()
         this.checkPasswordRepeat()
+        if (this.passwordStrength < 2) {
+          tip('密码强度过低','err')
+        }
         let account = this.account, password = this.password
         if (this.accountClass == 'success' && this.passwordRepeatClass == 'success' && this.passwordStrength > 1) {
           this.$http.post(this.urlPrefix + 'register',{account,password}).then(res=>{
             if (res.body.state == 1 ) {
-              tip('注册成功，即将自动登录')
-              this.$http.get(this.urlPrefix + 'login',{params:{account,password}}).then(res=>{
-                if (res.body.state == 1) {
-                  tip('自动登录成功，即将自动转跳')
-                  setInterval(()=> {
-                    this.$router.push({name:'center'})
-                  }, 500)
-                } else {
-                  tip('自动登录失败，请手动登录','error')
-                  setInterval(()=> {
-                    this.$router.push({name:'login'})
-                  }, 500)
-                }
-              })
+              tip('注册成功')
+              setTimeout(()=> {
+                this.$http.get(this.urlPrefix + 'login',{params:{account,password}}).then(res=>{
+                  if (res.body.state == 1) {
+                    tip('即将自动登录')
+                    setTimeout(()=> {
+                      this.$router.push({name:'center'})
+                    }, 1000)
+                  } else {
+                    tip('自动登录失败，请手动登录','err')
+                    setTimeout(()=> {
+                      this.$router.push({name:'login'})
+                    }, 1000)
+                  }
+                })
+              },1000)
             } else {
               tip('注册失败')
               console.log(res)

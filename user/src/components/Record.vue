@@ -5,8 +5,8 @@
       <i class="icon-refresh" @click="getRecord()"></i>
     </h2>
     <p>
-      全<span>{{records.length}}</span>条,
-      共<span>{{Math.ceil(records.length/10)}}</span>页
+      全<span style="color:#f45d90;">{{records.length}}</span>条,
+      共<span style="color:#f45d90;">{{Math.ceil(records.length/10)}}</span>页
     </p>
     <table id='record'>
       <tbody>
@@ -29,9 +29,9 @@
       </tbody>
     </table>
     <p style="text-align:center">
-      <span v-show="page>1" @click="page--">上一页</span>
+      <a href="javascript:;" v-show="page>1" @click="page--" class="record-a">上一页</a>
       第<span>{{page}}</span>页
-      <span v-show="page<Math.ceil(records.length/10)" @click="page++">下一页</span>
+      <a href="javascript:;" v-show="page<Math.ceil(records.length/10)" @click="page++" class="record-a">下一页</a>
     </p>
   </li>
 </template>

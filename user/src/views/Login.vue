@@ -3,13 +3,13 @@
     <h2 class="login-head">登入</h2>
     <div class="login-body">
       <div class="login-line">
-        <label>用户名</label><input type="text" v-model="account" maxlength="16">
+        <label>用户名</label><input type="text" v-model="account" maxlength="16" autocomplete="new-password">
       </div>
       <div class="login-line">
-        <label>密码</label><input type="password" v-model="password" maxlength="16" @keydown.enter="checkLogin(account, password)">
+        <label>密码</label><input type="password" v-model="password" maxlength="16" @keydown.enter="checkLogin(account, password)" autocomplete="new-password">
       </div>
       <div class="login-line">
-        <a href="javascript:;" class="login-btn login-submit" @click="checkLogin(account, password)">登入</a>
+        <a href="javascript:;" class="login-btn login-submit" @click="login(account, password)">登入</a>
         <a href="javascript:;" class="login-btn login-reg"  @click="$router.push({name: 'register'})">注册</a>
       </div>
     </div>
@@ -26,16 +26,29 @@
         password: ''
       }
     },
+    created(){
+      this.$http.get(this.urlPrefix+'checkLogin').then(res => {
+        if (res.body.state == 2002) {
+          tip('你已登录，请先退出','err')
+          setTimeout(()=>{
+            this.$router.push({name:'center'})
+          },500)
+        }
+      })
+    },
+    computed:{
+      urlPrefix () {
+        return process.env.NODE_ENV === 'production' ? '/ajax/user/' : 'http://localhost/ajax/user/'
+      },
+    },
     methods: {
       log() {
         console.log(this)
       },
-      checkLogin(account, password) {
+      login(account, password) {
         tip('登入中...','info',500)
-        let url = process.env.NODE_ENV === 'production' ? '/ajax/user/login' : 'http://localhost/ajax/user/login'
-          this.$http.get(url,{params:{account,password}})
-          .then(res => {
-            switch (res.body.state) {
+        this.$http.get(this.urlPrefix+'login',{params:{account,password}}).then(res => {
+          switch (res.body.state) {
             case 1:
               tip('登入成功，即将自动转跳')
               setTimeout(()=>{
@@ -60,8 +73,8 @@
             default:
               tip('未知错误','err')
               break;
-            }
-          }, err => console.error(err))
+          }
+        }, err => console.error(err))
       }
     }
   }
