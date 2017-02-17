@@ -1,6 +1,6 @@
 <template>
   <div id="login">
-    <h2 class="login-head">登入Haizainai</h2>
+    <h2 class="login-head">登入</h2>
     <div class="login-body">
       <div class="login-line">
         <label>用户名</label><input type="text" v-model="account" maxlength="16">
@@ -9,8 +9,8 @@
         <label>密码</label><input type="password" v-model="password" maxlength="16" @keydown.enter="checkLogin(account, password)">
       </div>
       <div class="login-line">
-        <div class="login-btn login-submit" @click="checkLogin(account, password)">登入</div>
-        <router-link :to="{name: 'register'}"><div class="login-btn login-reg">注册</div></router-link>
+        <a href="javascript:;" class="login-btn login-submit" @click="checkLogin(account, password)">登入</a>
+        <a href="javascript:;" class="login-btn login-reg"  @click="$router.push({name: 'register'})">注册</a>
       </div>
     </div>
   </div>
