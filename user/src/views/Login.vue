@@ -1,12 +1,16 @@
 <template>
   <div id="login">
-    <h2 class="login-head">登入</h2>
+    <h2 class="login-head" @click="log()">登录</h2>
     <div class="login-body">
       <div class="login-line">
         <label>用户名</label><input type="text" v-model="account" maxlength="16" autocomplete="new-password">
       </div>
       <div class="login-line">
         <label>密码</label><input type="password" v-model="password" maxlength="16" @keydown.enter="login()" autocomplete="new-password">
+      </div>
+      <div class="login-small">
+        <input type="checkbox" id="saveAccount" v-model="saveAccount"><label for="saveAccount">记住用户名</label>
+        <input type="checkbox" id="autoLogin" v-model="autoLogin"><label for="autoLogin">下次自动登录</label>
       </div>
       <div class="login-line">
         <a href="javascript:;" class="login-btn login-submit" @click="login()">登入</a>
@@ -23,7 +27,9 @@
     data() {
       return {
         account: '',
-        password: ''
+        password: '',
+        saveAccount: false,
+        autoLogin: false,
       }
     },
     created(){
@@ -33,8 +39,33 @@
           setTimeout(()=>{
             this.$router.push({name:'center'})
           },500)
+        } else {
+          let account = window.localStorage.getItem('haizai_account')
+          let password = window.localStorage.getItem('haizai_password')
+          if (account) {
+            this.saveAccount = true,
+            this.account = account
+          }
+          if (password) {
+            this.$http.get(this.urlPrefix+'login',{params:{account,password}}).then(res => {
+              if (res.body.state == 1) {
+                tip('自动登录成功')
+                this.$router.push({name:'center'})
+              } else {
+                window.localStorage.remove('haizai_password')
+              }
+            })
+          }
         }
       })
+    },
+    watch: {
+      saveAccount(val){
+        if (!val) this.autoLogin = false
+      },
+      autoLogin(val) {
+        if (val) this.saveAccount = true
+      }
     },
     computed:{
       urlPrefix () {
@@ -42,11 +73,16 @@
       },
     },
     methods: {
+      log(){
+        console.log(this)
+      },
       login() {
+        this.saveAccount ? window.localStorage.setItem('haizai_account',this.account) : window.localStorage.removeItem('haizai_account')
         tip('登入中...','info',500)
         this.$http.get(this.urlPrefix+'login',{params:{account:this.account,password:this.password}}).then(res => {
           switch (res.body.state) {
             case 1:
+              this.autoLogin ? window.localStorage.setItem('haizai_password',this.password) : window.localStorage.removeItem('haizai_password')
               tip('登入成功，即将自动转跳')
               setTimeout(()=>{
                 this.$router.push({name: 'center'})

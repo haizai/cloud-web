@@ -33,6 +33,19 @@
 .login-line-tip.success {
   color: #00a1d6
 }
+.login-small {
+  margin-bottom: -10px;
+  margin-left: 40px;
+}
+.login-small label {
+  cursor: pointer;
+  vertical-align: 10%;
+  padding-left: 4px;
+  margin-right: 30px;
+}
+.login-small label:hover {
+  color: #00a1d6;
+}
 .password-strength {
   position: absolute;
   left: 63px;
@@ -79,7 +92,6 @@
   display: inline-block;
   height: 40px;
   margin-left: 35px;
-  margin-top: 15px;
   line-height: 40px;
   padding: 0px 55px;
   border-radius: 4px;
