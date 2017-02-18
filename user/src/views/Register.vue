@@ -25,9 +25,13 @@
         <input type="password" v-model="passwordRepeat" maxlength="16" @blur="checkPasswordRepeat()" autocomplete="off" value="">
         <p class="login-line-tip" :class="passwordRepeatClass">{{passwordRepeatTip}}</p>
       </div>
+      <div class="login-small">
+        <input type="checkbox" id="protocol" v-model="protocol">
+        <label for="protocol" title="其实并没有什么协议">我已经同意《Haizainaive用户协议》</label>
+      </div>
       <div class="login-line">
-        <a href="javascript:;" class="login-btn login-submit" @click="register()">注册</a>
-        <a href="javascript:;" @click="$router.push({name:'login'})" class="login-btn login-reg">已有账号</a>
+        <a href="javascript:;" class="login-btn" :class="{'login-submit': protocol,'login-other': !protocol}" @click="register()">注册</a>
+        <a href="javascript:;" @click="$router.push({name:'login'})" class="login-btn login-other">已有账号</a>
       </div>
     </div>
   </div>
@@ -47,7 +51,8 @@
         passwordStrength: 0,
         passwordRepeat: '',
         passwordRepeatClass: '',
-        passwordRepeatTip: ''
+        passwordRepeatTip: '',
+        protocol: false,
       }
     },
     created(){
@@ -136,11 +141,11 @@
         this.checkAccount()
         this.checkPassword()
         this.checkPasswordRepeat()
-        if (this.passwordStrength < 2) {
-          tip('密码强度过低','err')
-        }
+        // if (this.passwordStrength < 2) {
+        //   tip('密码强度过低','err')
+        // }
         let account = this.account, password = this.password
-        if (this.accountClass == 'success' && this.passwordRepeatClass == 'success' && this.passwordStrength > 1) {
+        if (this.accountClass == 'success' && this.passwordRepeatClass == 'success' && this.passwordStrength > 1 && this.protocol) {
           this.$http.post(this.urlPrefix + 'register',{account,password}).then(res=>{
             if (res.body.state == 1 ) {
               tip('注册成功')

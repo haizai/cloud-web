@@ -93,13 +93,13 @@
       logoff() {
         this.$http.get(this.urlPrefix + 'logoff').then( res=>{
           if (res.body.state === 1) {
-            tip('注销成功，即将自动转跳')
+            tip('退出成功')
             window.localStorage.removeItem('haizai_password')
             setTimeout(()=>{
               this.$router.push({name:'login'})
             },1000)
           } else {
-            tip('注销失败','err')
+            tip('退出失败','err')
           }
         })
       },

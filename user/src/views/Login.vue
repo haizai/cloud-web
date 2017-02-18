@@ -14,7 +14,7 @@
       </div>
       <div class="login-line">
         <a href="javascript:;" class="login-btn login-submit" @click="login()">登入</a>
-        <a href="javascript:;" class="login-btn login-reg"  @click="$router.push({name: 'register'})">注册</a>
+        <a href="javascript:;" class="login-btn login-other"  @click="$router.push({name: 'register'})">注册</a>
       </div>
     </div>
   </div>
