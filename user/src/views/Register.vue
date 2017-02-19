@@ -25,6 +25,11 @@
         <input type="password" v-model="passwordRepeat" maxlength="16" @blur="checkPasswordRepeat()" autocomplete="off" value="">
         <p class="login-line-tip" :class="passwordRepeatClass">{{passwordRepeatTip}}</p>
       </div>
+      <div class="login-line">
+        <label>验证码</label>
+        <input type="text" v-model="captchaText" style="width:70px;" maxlength="4">
+        <div class="login-catcha" v-html="captchaSvg"></div>
+      </div>
       <div class="login-small">
         <input type="checkbox" id="protocol" v-model="protocol">
         <label for="protocol" title="其实并没有什么协议">我已经同意《Haizainaive用户协议》</label>
@@ -53,21 +58,32 @@
         passwordRepeatClass: '',
         passwordRepeatTip: '',
         protocol: false,
+        captchaSvg: '',
+        captchaText:''
       }
     },
     created(){
-      this.$http.get(this.urlPrefix+'checkLogin').then(res => {
+      this.$http.get(this.urlPrefix+'user/checkLogin').then(res => {
         if (res.body.state == 2002) {
           tip('你已登录，请先退出','err')
           setTimeout(()=>{
             this.$router.push({name:'center'})
           },500)
+        } else {
+          this.$http.get(this.urlPrefix+'captcha').then((res)=>{
+            var reader = new FileReader()
+            reader.readAsText(res.body)
+            reader.addEventListener("loadend", ()=>{
+              console.log('loadend',reader)
+              this.captchaSvg = reader.result
+            });
+          })
         }
       })
     },
     computed:{
       urlPrefix () {
-        return process.env.NODE_ENV === 'production' ? '/ajax/user/' : 'http://localhost/ajax/user/'
+        return process.env.NODE_ENV === 'production' ? '/ajax/' : 'http://localhost/ajax/'
       },
     },
     methods: {
@@ -91,7 +107,7 @@
           this.accountClass = 'error'
           return
         }
-        this.$http.get(this.urlPrefix + 'checkAccount',{params:{account:this.account}}).then(res => {
+        this.$http.get(this.urlPrefix + 'user/checkAccount',{params:{account:this.account}}).then(res => {
           if (res.body.state == 1) {
             this.accountTip = '用户名可用'
             this.accountClass = 'success'
@@ -144,23 +160,19 @@
         // if (this.passwordStrength < 2) {
         //   tip('密码强度过低','err')
         // }
-        let account = this.account, password = this.password
+        let account = this.account, password = this.password,captcha = this.captchaText
         if (this.accountClass == 'success' && this.passwordRepeatClass == 'success' && this.passwordStrength > 1 && this.protocol) {
-          this.$http.post(this.urlPrefix + 'register',{account,password}).then(res=>{
+          this.$http.post(this.urlPrefix + 'user/register',{account,password,captcha}).then(res=>{
             if (res.body.state == 1 ) {
               tip('注册成功')
               setTimeout(()=> {
-                this.$http.get(this.urlPrefix + 'login',{params:{account,password}}).then(res=>{
+                this.$http.get(this.urlPrefix + 'user/login',{params:{account,password}}).then(res=>{
                   if (res.body.state == 1) {
                     tip('即将自动登录')
-                    setTimeout(()=> {
-                      this.$router.push({name:'center'})
-                    }, 1000)
+                    setTimeout(()=> this.$router.push({name:'center'}), 1000)
                   } else {
                     tip('自动登录失败，请手动登录','err')
-                    setTimeout(()=> {
-                      this.$router.push({name:'login'})
-                    }, 1000)
+                    setTimeout(()=> this.$router.push({name:'login'}), 1000)
                   }
                 })
               },1000)

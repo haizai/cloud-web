@@ -46,6 +46,12 @@
 .login-small label:hover {
   color: #00a1d6;
 }
+.login-catcha {
+  display: inline-block;
+  margin-top: -8px;
+  margin-left: 20px;
+  position: absolute;
+}
 .password-strength {
   position: absolute;
   left: 63px;
