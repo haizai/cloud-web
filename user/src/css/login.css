@@ -28,10 +28,10 @@
   left: 100px;
 }
 .login-line-tip.error {
-  color: #f45d90
+  color: #f45d90;
 }
 .login-line-tip.success {
-  color: #00a1d6
+  color: #00a1d6;
 }
 .login-small {
   margin-bottom: -10px;
@@ -44,6 +44,12 @@
   margin-right: 30px;
 }
 .login-small label:hover {
+  color: #00a1d6;
+}
+.login-small label.error {
+  color: #f45d90;
+}
+.login-small label.success {
   color: #00a1d6;
 }
 .login-catcha {
@@ -93,6 +99,16 @@
   width: 280px;
   font-size: 16px;
   padding-left: 2px;
+  border: 1px solid #aaa;
+}
+.login-line input:focus {
+  outline-color: rgba(0,0,0,.3);
+}
+.login-line input.error {
+  border-color: #f45d90;
+}
+.login-line input.success {
+  border-color: #00a1d6;
 }
 .login-btn {
   display: inline-block;
