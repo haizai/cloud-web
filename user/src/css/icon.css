@@ -24,14 +24,14 @@ i {
 }
 
 .tran-round {
-  transition: transform .6s ease;
+  transition: transform .4s ease;
 }
 .tran-round:hover {
   transform: rotate(360deg)
 }
 .tran-ZoomIn {
-  transition: transform .3s ease;
+  transition: transform .2s ease;
 }
 .tran-ZoomIn:hover {
-  transform: scale(1.1,1.1)
+  transform: scale(1.05,1.05)
 }

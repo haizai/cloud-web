@@ -68,8 +68,8 @@
           maxlength="4">
         <i :class="'icon-' + captchaClass"></i>
         <p class="login-line-tip" :class="captchaClass">{{captchaTip}}</p>
-        <div class="login-catcha tran-ZoomIn" v-html="captchaSvg"></div>
-        <i class="icon-refresh tran-round" style="left: 366px;top: 10px;"></i>
+        <div class="login-catcha tran-ZoomIn" v-html="captchaSvg" @click="getCaptcha()"></div>
+        <i class="icon-refresh tran-round" style="left: 366px;top: 10px;" @click="getCaptcha()"></i>
       </div>
 
       <div class="login-small">
@@ -124,13 +124,7 @@
             this.$router.push({name:'center'})
           },500)
         } else {
-          this.$http.get(this.urlPrefix+'getCaptcha').then(res=>{
-
-            // 将blob转换为text
-            var reader = new FileReader()
-            reader.readAsText(res.body)
-            reader.addEventListener("loadend", ()=>this.captchaSvg = reader.result);
-          })
+          this.getCaptcha()
         }
       })
     },
@@ -142,6 +136,16 @@
     methods: {
       log() {
         console.log(this)
+      },
+      getCaptcha() {
+        this.$http.get(this.urlPrefix+'getCaptcha').then(res=>{
+
+          // 将blob转换为text
+          var reader = new FileReader()
+          reader.readAsText(res.body)
+          reader.addEventListener("loadend", ()=>this.captchaSvg = reader.result);
+          this.captchaText = ''
+        })
       },
       checkAccount() {
         if (this.account == '') {
