@@ -2,6 +2,7 @@
   <div id="register">
     <h2 class="login-head">注册</h2>
     <div class="login-body">
+
       <div class="login-line">
         <label @click="log()">用户名</label>
         <input 
@@ -12,8 +13,10 @@
           @blur="checkAccount()" 
           placeholder="4到16位英文或数字字符" 
           autocomplete="new-password">
+        <i :class="'icon-' + accountClass"></i>
         <p class="login-line-tip" :class="accountClass">{{accountTip}}</p>
       </div>
+
       <div class="login-line">
         <label>密码</label>
         <input 
@@ -22,8 +25,10 @@
           v-model="password" 
           maxlength="16" 
           @keyup="checkPassword()"
+          @blur="checkPassword()"
           placeholder="6到16位英文及数字字符" 
           autocomplete="new-password">
+        <i :class="{'icon-error': passwordStrength == 1 || passwordStrength == 0 ,'icon-success': passwordStrength > 1}"></i>
         <p class="login-line-tip error" v-show="passwordStrength == 0">{{passwordTip}}</p>
         <div 
           class="login-line-tip" 
@@ -37,6 +42,7 @@
           </div>
         </div>
       </div>
+
       <div class="login-line">
         <label>确认密码</label>
         <input 
@@ -46,8 +52,10 @@
           maxlength="16" 
           @blur="checkPasswordRepeat()" 
           autocomplete="new-password">
+        <i :class="'icon-' + passwordRepeatClass"></i>
         <p class="login-line-tip" :class="passwordRepeatClass">{{passwordRepeatTip}}</p>
       </div>
+
       <div class="login-line">
         <label>验证码</label>
         <input 
@@ -58,13 +66,17 @@
           @blur="checkCaptcha()"
           @keyup="keyupCaptcha()"
           maxlength="4">
+        <i :class="'icon-' + captchaClass"></i>
         <p class="login-line-tip" :class="captchaClass">{{captchaTip}}</p>
-        <div class="login-catcha" v-html="captchaSvg"></div>
+        <div class="login-catcha tran-ZoomIn" v-html="captchaSvg"></div>
+        <i class="icon-refresh tran-round" style="left: 366px;top: 10px;"></i>
       </div>
+
       <div class="login-small">
         <input type="checkbox" id="protocol" v-model="protocol" @change="checkProtocol()">
         <label for="protocol" title="其实并没有什么协议" :class="protocolClass">我已经同意《Haizainaive用户协议》</label>
       </div>
+
       <div class="login-line">
         <a 
           href="javascript:;" 
@@ -76,6 +88,7 @@
           @click="$router.push({name:'login'})" 
           class="login-btn login-other">已有账号</a>
       </div>
+
     </div>
   </div>
 </template>
@@ -195,7 +208,7 @@
       },
       checkCaptcha(){
         if (this.captchaText.length === 0) {
-          this.captchaTip = '請输入验证码'
+          this.captchaTip = '请输入验证码'
           this.captchaClass = 'error'
         } else if (this.captchaText.length !== 4) {
           this.captchaTip = '验证码为4位'

@@ -55,8 +55,9 @@
 .login-catcha {
   display: inline-block;
   margin-top: -8px;
-  margin-left: 20px;
+  margin-left: 40px;
   position: absolute;
+  cursor: pointer;
 }
 .password-strength {
   position: absolute;

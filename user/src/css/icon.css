@@ -1,11 +1,37 @@
 i {
   display: inline-block;
+  position: absolute;
 }
 .icon-refresh {
   background:  url('../img/refresh.png') no-repeat;
   width: 24px;
   height: 24px;
-  margin-left: 10px;
-  vertical-align: -8%;
   cursor: pointer;
+}
+.icon-success {
+  background:  url('../img/success.png') no-repeat;
+  margin-top: 4px;
+  margin-left: 10px;
+  width: 24px;
+  height: 24px;
+}
+.icon-error {
+  background:  url('../img/error.png') no-repeat;
+  margin-top: 4px;
+  margin-left: 10px;
+  width: 24px;
+  height: 24px;
+}
+
+.tran-round {
+  transition: transform .6s ease;
+}
+.tran-round:hover {
+  transform: rotate(360deg)
+}
+.tran-ZoomIn {
+  transition: transform .3s ease;
+}
+.tran-ZoomIn:hover {
+  transform: scale(1.1,1.1)
 }
