@@ -2,7 +2,7 @@
   <li>
     <h2 class="content-title">
       操作记录
-      <i class="icon-refresh" @click="getRecord()"></i>
+      <i class="icon-refresh tran-round" style="margin-top:28px;margin-left:8px;" @click="getRecord()"></i>
     </h2>
     <p>
       全<span style="color:#f45d90;">{{records.length}}</span>条,

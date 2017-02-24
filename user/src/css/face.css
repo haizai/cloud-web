@@ -1,0 +1,30 @@
+.face-face {
+  width: 128px;
+  height: 128px;
+  margin: 30px 30px;
+}
+.face-myface span {
+  position: absolute;
+  margin-top: 50px;
+  margin-left: 56px;
+  font-size: 18px;
+}
+.face-now {
+  width: 128px;
+  height: 128px;
+  border-radius: 68px;
+  border: 4px solid rgba(0, 0, 0, .2);
+  margin-left: 160px;
+}
+.face-type {
+  border-bottom: 1px solid #ccc;
+}
+.face-type li {
+  width: 40px;
+  margin: 0 50px;
+  height: 40px;
+  line-height: 40px;
+  text-align: center;
+  display: inline-block;
+  font-size: 14px;
+}

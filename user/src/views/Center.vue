@@ -9,6 +9,7 @@
       <ul class="center-content">
         <Index v-if="active == 'index'" />
         <Record v-if="active == 'record'" />
+        <Face v-if="active == 'face'" />
       </ul>
     </div>
   </div>
@@ -19,12 +20,14 @@
 
   import Index from '../components/Index.vue'
   import Record from '../components/Record.vue'
+  import Face from '../components/Face.vue'
 
   export default {
     name: 'center',
     components: {
       Index,
-      Record
+      Record,
+      Face
     },
     created(){
       this.$http.get(this.urlPrefix+'checkLogin').then(res => {
@@ -47,6 +50,7 @@
         children: [
           {name: 'index', chinese: '首页'},
           {name: 'record', chinese: '操作记录'},
+          {name: 'face', chinese: '更换头像'},
         ]
       }
     },

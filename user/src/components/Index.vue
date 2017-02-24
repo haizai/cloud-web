@@ -2,13 +2,16 @@
   <li>
     <h2 class="content-title">首页</h2>
     <div id="index">
-      <p>
-        <span class="index-account" @click="log()">{{user.account}}</span>
-        <span class="index-uid">uid: <span>{{user.uid}}</span></span>
-        <span class="index-position">{{computedPosition}}</span>
+      <div class="index-first">
+        <img class="index-face" src="img/face/defalut/boy/boy_1.png">
+        <div class="index-first-right">
+          <span class="index-account" @click="log()">{{user.account}}</span>
+          <span class="index-uid">uid: <span>{{user.uid}}</span></span>
+          <span class="index-position">{{computedPosition}}</span>
+          <p>注册时间： <span>{{new Date(user.registerTime).toLocaleString()}}</span></p>
+        </div>
         <span class="index-btn" @click="logoff()">退出登录</span>
-      </p>
-      <p>注册时间： <span>{{new Date(user.registerTime).toLocaleString()}}</span></p>
+      </div>
       <p>
         个性签名：
         <span class="index-sign-span" @click="signClick()" ref="signSpan">{{computedSign}}</span>

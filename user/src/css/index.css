@@ -1,4 +1,4 @@
-#index p {
+#index>p {
   padding-left: 20px;
   line-height: 40px;
 }
@@ -46,4 +46,16 @@
 .index-btn:hover {
   color: #777;
   background-color: #f5f5f5;
+}
+.index-first-right {
+  display: inline-block;
+  vertical-align: top;
+}
+
+.index-face {
+  width: 128px;
+  height: 128px;
+  border-radius: 64px;
+  margin: 0 10px;
+  cursor: pointer;
 }
