@@ -1,9 +1,9 @@
 <template>
   <li>
-    <h2 class="content-title">首页</h2>
+    <h2 class="content-title" @click="log()">首页</h2>
     <div id="index">
       <div class="index-first">
-        <img class="index-face" src="img/face/defalut/boy/boy_1.png">
+        <img v-if="user.face.style" class="index-face" :src="'img/face/defalut/' + user.face.style + '/' + user.face.name  + '.png'">
         <div class="index-first-right">
           <span class="index-account" @click="log()">{{user.account}}</span>
           <span class="index-uid">uid: <span>{{user.uid}}</span></span>
@@ -47,24 +47,14 @@
 
   export default {
     name: 'index',
+    props: ['user'],
     data() {
       return {
-        user: {
-          msg: {}
-        },
         signFocus: false,
         lastSign: null,
         provinces,
         citys,
       }
-    },
-    created() {
-      this.$http.get(this.urlPrefix + 'getUserInCenter')
-        .then((res)=>{
-          if (res.body.state === 1) {
-            this.user = res.body.user
-          }
-        })
     },
     computed: {
       urlPrefix () {

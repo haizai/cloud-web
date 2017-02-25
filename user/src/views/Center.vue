@@ -7,9 +7,9 @@
         <li v-for="child in children" :class="{active: active == child.name}" @click="active = child.name">{{child.chinese}}</li>
       </ul>
       <ul class="center-content">
-        <Index v-if="active == 'index'" />
+        <Index v-if="active == 'index'" :user="user"/>
         <Record v-if="active == 'record'" />
-        <Face v-if="active == 'face'" />
+        <Face v-if="active == 'face'" :face="user.face" :urlPrefix="urlPrefix"/>
       </ul>
     </div>
   </div>
@@ -36,6 +36,15 @@
           setTimeout(()=>{
             this.$router.push({name:'login'})
           },500)
+        } else {
+          this.$http.get(this.urlPrefix + 'getUserInCenter').then(res=>{
+            if (res.body.state === 1) {
+              var user = res.body.user
+              console.log(res,user)
+              if (!user.face) user.face = {style: 'boy','name': 1}
+              this.user = res.body.user
+            }
+          })
         }
       })
     },
@@ -51,7 +60,14 @@
           {name: 'index', chinese: '首页'},
           {name: 'record', chinese: '操作记录'},
           {name: 'face', chinese: '更换头像'},
-        ]
+        ],
+        user: {
+          msg: {},
+          face: {
+            style:'',
+            name:''
+          },
+        },
       }
     },
     methods: {
