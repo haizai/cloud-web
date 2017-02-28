@@ -1,7 +1,7 @@
 <template>
 	<div id="gomoku">
     <h1 @click="log()">gomoku</h1>
-    <p class="now">执{{chineseColor}}</p>
+    <p class="now" v-text="tip"></p>
     <div class="chessboard">
       <canvas class="background" width="640" height="640" ref="canvas"></canvas>
       <dt>
@@ -71,7 +71,8 @@
     },
     data() {
       return {
-        color:'b'
+        color:'b',
+        wing: null,
       }
     },
     computed:{
@@ -82,29 +83,81 @@
           return '白'
         }
       },
+      tip() {
+        switch (this.wing) {
+          case null:
+            return '执' + this.chineseColor;
+          case 'b':
+            return '黑棋胜'
+          case 'w':
+            return '白棋胜'
+          default:
+            return ''
+        }
+
+      }
     },
     methods:{
       log(){
         console.log(this)
       },
-      // test() {
-      //   let chessmen = this.chessmen
-      //   for (let r in chessmen) {
-      //     for (let c in chessmen[r]) {
-      //       if (chessmen[r][c] !== null 
-      //         && chessmen[r][c] == chessmen[r][c+1] 
-      //         && chessmen[r][c] == chessmen[r][c+2] 
-      //         && chessmen[r][c] == chessmen[r][c+3] 
-      //         && chessmen[r][c] == chessmen[r][c+4] 
-      //         && chessmen[r][c] == chessmen[r][c+5]) {
-      //         console(r,c,chessmen[r][c])
-      //       }
-      //       if (chessmen[r][c] !== null ) {
-      //         console(r,c,chessmen[r][c])
-      //       }
-      //     }
-      //   }
-      // },
+      test() {
+        let chessmen = this.chessmen
+        for (let r in chessmen) {
+          r = (+r)
+          for (let c in chessmen[r]) {
+            c = (+c)
+
+            // 横五个
+            if (
+              chessmen[r][c] !== null 
+              && chessmen[r][c] == chessmen[r][c+1]
+              && chessmen[r][c] == chessmen[r][c+2]
+              && chessmen[r][c] == chessmen[r][c+3]
+              && chessmen[r][c] == chessmen[r][c+4]
+            ) {
+              this.wing = chessmen[r][c]
+              console.log('wing',chessmen[r][c],[r,c],[r,c+1],[r,c+2],[r,c+3],[r,c+4])
+            }
+
+            //竖五个
+            if (
+              chessmen[r][c] !== null 
+              && chessmen[r][c] == chessmen[r+1][c]
+              && chessmen[r][c] == chessmen[r+2][c]
+              && chessmen[r][c] == chessmen[r+3][c]
+              && chessmen[r][c] == chessmen[r+4][c]
+            ) {
+              this.wing = chessmen[r][c]
+              console.log('wing',chessmen[r][c],[r,c],[r+1,c],[r+2,c],[r+3,c],[r+4,c])
+            }
+
+            //左上斜五个
+            if (
+              chessmen[r][c] !== null 
+              && chessmen[r][c] == chessmen[r+1][c+1]
+              && chessmen[r][c] == chessmen[r+2][c+2]
+              && chessmen[r][c] == chessmen[r+3][c+3]
+              && chessmen[r][c] == chessmen[r+4][c+4]
+            ) {
+              this.wing = chessmen[r][c]
+              console.log('wing',chessmen[r][c],[r,c],[r+1,c+1],[r+2,c+2],[r+3,c+3],[r+4,c+4])
+            }
+
+            //左下斜五个
+            if (
+              chessmen[r][c] !== null 
+              && chessmen[r][c] == chessmen[r+1][c-1]
+              && chessmen[r][c] == chessmen[r+2][c-2]
+              && chessmen[r][c] == chessmen[r+3][c-3]
+              && chessmen[r][c] == chessmen[r+4][c-4]
+            ) {
+              this.wing = chessmen[r][c]
+              console.log('wing',chessmen[r][c],[r,c],[r+1,c-1],[r+2,c-2],[r+3,c-3],[r+4,c-4])
+            }
+          }
+        }
+      },
       /**
        * 落子 以左上角为第一行第一列
        * @param  Int r row行
@@ -115,10 +168,13 @@
           console.log(r,c,'已有落子')
           return
         }
+        if (this.wing) {
+          return
+        }
         this.chessmen[r][c] = this.color
         this.$forceUpdate()
 
-        
+        this.test()
 
         if (this.color == 'b') {
           this.color = 'w'
