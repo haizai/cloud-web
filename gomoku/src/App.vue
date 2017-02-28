@@ -1,15 +1,17 @@
 <template>
 	<div id="gomoku">
     <h1 @click="log()">gomoku</h1>
-    <p class="now" v-text="tip"></p>
+    <p class="now">{{tip}}<button @click="reset()">reset</button></p>
     <div class="chessboard">
+      <span class="wingChess" v-for="chess in wingChess" :class='wing' :style="{'margin-top': chess[0] * 40 - 5 + 'px' ,'margin-left': chess[1] * 40 - 5 + 'px'}"></span>
       <canvas class="background" width="640" height="640" ref="canvas"></canvas>
-      <dt>
+      <dt ref="dt">
         <dl v-for="r in 15">
-          <dd v-for="c in 15" :class="chessmen[r][c]" @click="move(r,c)"></dd>
+          <dd v-for="c in 15" :class="chessmen[r][c].color" @click="move(r,c)"></dd>
         </dl>
       </dt>
     </div>
+
 	</div>
 </template>
 
@@ -22,7 +24,10 @@
       for (let r = 1; r <= 15; r++) {
         obj[r] = {}
         for (let c = 1; c <= 15; c++) {
-          obj[r][c] = null
+          obj[r][c] = {
+            color: null,
+            wing: null
+          }
         }
       }
       this.chessmen = obj
@@ -73,6 +78,7 @@
       return {
         color:'b',
         wing: null,
+        wingChess:[],
       }
     },
     computed:{
@@ -109,51 +115,36 @@
             c = (+c)
 
             // 横五个
+            var color = chessmen[r][c].color
             if (
-              chessmen[r][c] !== null 
-              && chessmen[r][c] == chessmen[r][c+1]
-              && chessmen[r][c] == chessmen[r][c+2]
-              && chessmen[r][c] == chessmen[r][c+3]
-              && chessmen[r][c] == chessmen[r][c+4]
+              color !== null && color == chessmen[r][c+1].color && color == chessmen[r][c+2].color && color == chessmen[r][c+3].color && color == chessmen[r][c+4].color
             ) {
-              this.wing = chessmen[r][c]
-              console.log('wing',chessmen[r][c],[r,c],[r,c+1],[r,c+2],[r,c+3],[r,c+4])
+              this.wing = color
+              this.wingChess = [[r,c],[r,c+1],[r,c+2],[r,c+3],[r,c+4]]
             }
 
             //竖五个
             if (
-              chessmen[r][c] !== null 
-              && chessmen[r][c] == chessmen[r+1][c]
-              && chessmen[r][c] == chessmen[r+2][c]
-              && chessmen[r][c] == chessmen[r+3][c]
-              && chessmen[r][c] == chessmen[r+4][c]
+              color !== null && color == chessmen[r+1][c].color&& color == chessmen[r+2][c].color&& color == chessmen[r+3][c].color&& color == chessmen[r+4][c].color
             ) {
-              this.wing = chessmen[r][c]
-              console.log('wing',chessmen[r][c],[r,c],[r+1,c],[r+2,c],[r+3,c],[r+4,c])
+              this.wing = color
+              this.wingChess = [[r,c],[r+1,c],[r+2,c],[r+3,c],[r+4,c]]
             }
 
             //左上斜五个
             if (
-              chessmen[r][c] !== null 
-              && chessmen[r][c] == chessmen[r+1][c+1]
-              && chessmen[r][c] == chessmen[r+2][c+2]
-              && chessmen[r][c] == chessmen[r+3][c+3]
-              && chessmen[r][c] == chessmen[r+4][c+4]
+              chessmen[r][c].color !== null && color == chessmen[r+1][c+1].color&& color == chessmen[r+2][c+2].color&& color == chessmen[r+3][c+3].color&& color == chessmen[r+4][c+4].color
             ) {
-              this.wing = chessmen[r][c]
-              console.log('wing',chessmen[r][c],[r,c],[r+1,c+1],[r+2,c+2],[r+3,c+3],[r+4,c+4])
+              this.wing = chessmen[r][c].color
+              this.wingChess = [[r,c],[r+1,c+1],[r+2,c+2],[r+3,c+3],[r+4,c+4]]
             }
 
             //左下斜五个
             if (
-              chessmen[r][c] !== null 
-              && chessmen[r][c] == chessmen[r+1][c-1]
-              && chessmen[r][c] == chessmen[r+2][c-2]
-              && chessmen[r][c] == chessmen[r+3][c-3]
-              && chessmen[r][c] == chessmen[r+4][c-4]
+              color !== null && color == chessmen[r+1][c-1].color&& color == chessmen[r+2][c-2].color&& color == chessmen[r+3][c-3].color&& color == chessmen[r+4][c-4].color
             ) {
-              this.wing = chessmen[r][c]
-              console.log('wing',chessmen[r][c],[r,c],[r+1,c-1],[r+2,c-2],[r+3,c-3],[r+4,c-4])
+              this.wing = color
+              this.wingChess = [[r,c],[r+1,c-1],[r+2,c-2],[r+3,c-3],[r+4,c-4]]
             }
           }
         }
@@ -164,23 +155,38 @@
        * @param  Int c column列 
        */
       move(r,c) {
-        if (this.chessmen[r][c] !== null) {
+        if (this.chessmen[r][c].color !== null) {
           console.log(r,c,'已有落子')
           return
         }
         if (this.wing) {
           return
         }
-        this.chessmen[r][c] = this.color
-        this.$forceUpdate()
+        this.chessmen[r][c].color = this.color
 
         this.test()
+        this.$forceUpdate()
 
         if (this.color == 'b') {
           this.color = 'w'
         } else {
           this.color = 'b'
         }
+      },
+      reset() {
+
+        for (let r = 1; r <= 15; r++) {
+          for (let c = 1; c <= 15; c++) {
+            this.chessmen[r][c] = {
+              color: null,
+              wing: null
+            }
+          }
+        }
+
+        this.color = 'b'
+        this.wing = null
+        this.wingChess = []
       }
     }
 	}

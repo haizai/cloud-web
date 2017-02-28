@@ -37,8 +37,21 @@ dd {
 dd.w {
   border-color: #333;
   background-color: #fff;
+  cursor: not-allowed;
 }
 dd.b {
   border-color: #333;
   background-color: #333;
+  cursor: not-allowed;
+}
+.wingChess {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+}
+.wingChess.w {
+  background-color: #333;
+}
+.wingChess.b {
+  background-color: #fff;
 }
