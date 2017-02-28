@@ -1,7 +1,10 @@
 <template>
 	<div id="gomoku">
     <h1 @click="log()">gomoku</h1>
-    <p class="now">{{tip}}<button @click="reset()">reset</button></p>
+    <p class="now">{{tip}}
+      <button @click="reset()">重开</button>
+      <button @click="regret()">悔棋</button>
+    </p>
     <div class="chessboard">
       <span class="wingChess" v-for="chess in wingChessSet" :class='wing' :style="{'margin-top': chess[0] * 40 - 5 + 'px' ,'margin-left': chess[1] * 40 - 5 + 'px'}"></span>
       <canvas class="background" width="640" height="640" ref="canvas"></canvas>
@@ -79,6 +82,7 @@
         color:'b',
         wing: null,
         wingChess:[],
+        lastMove: null,
       }
     },
     computed:{
@@ -156,6 +160,13 @@
           }
         }
       },
+      toggleColor() {
+        if (this.color == 'b') {
+          this.color = 'w'
+        } else {
+          this.color = 'b'
+        }
+      },
       /**
        * 落子 以左上角为第一行第一列
        * @param  Int r row行
@@ -172,16 +183,12 @@
         this.chessmen[r][c].color = this.color
 
         this.test()
+        this.lastMove = [r,c]
         this.$forceUpdate()
+        this.toggleColor()
 
-        if (this.color == 'b') {
-          this.color = 'w'
-        } else {
-          this.color = 'b'
-        }
       },
       reset() {
-
         for (let r = 1; r <= 15; r++) {
           for (let c = 1; c <= 15; c++) {
             this.chessmen[r][c] = {
@@ -190,10 +197,17 @@
             }
           }
         }
-
         this.color = 'b'
         this.wing = null
         this.wingChess = []
+      },
+      regret() {
+        if (!this.wing && this.lastMove) {
+          this.chessmen[this.lastMove[0]][this.lastMove[1]].color = null
+          this.$forceUpdate()
+          this.lastMove = null
+          this.toggleColor()
+        }
       }
     }
 	}
