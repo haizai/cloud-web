@@ -67,7 +67,7 @@
       ctx.textAlign = 'center'
       var letters = ['A','B','C','D','E','F','G','H','I','G','K','L','M','N','O']
       letters.forEach((letter,index)=>{
-        ctx.fillText(letter,(index+1)*w,w-20)
+        ctx.fillText(letter,(index+1)*w,w-24)
       })
       for(let i = 1; i <= 15; i++) {
         ctx.fillText(i,w-25,i*w+6)
@@ -114,38 +114,37 @@
           for (let c in chessmen[r]) {
             c = (+c)
 
-            // 横五个
+            
             var color = chessmen[r][c].color
-            if (
-              color !== null && color == chessmen[r][c+1].color && color == chessmen[r][c+2].color && color == chessmen[r][c+3].color && color == chessmen[r][c+4].color
-            ) {
-              this.wing = color
-              this.wingChess = [[r,c],[r,c+1],[r,c+2],[r,c+3],[r,c+4]]
-            }
 
-            //竖五个
-            if (
-              color !== null && color == chessmen[r+1][c].color&& color == chessmen[r+2][c].color&& color == chessmen[r+3][c].color&& color == chessmen[r+4][c].color
-            ) {
-              this.wing = color
-              this.wingChess = [[r,c],[r+1,c],[r+2,c],[r+3,c],[r+4,c]]
-            }
+            if (color !== null) {
 
-            //左上斜五个
-            if (
-              chessmen[r][c].color !== null && color == chessmen[r+1][c+1].color&& color == chessmen[r+2][c+2].color&& color == chessmen[r+3][c+3].color&& color == chessmen[r+4][c+4].color
-            ) {
-              this.wing = chessmen[r][c].color
-              this.wingChess = [[r,c],[r+1,c+1],[r+2,c+2],[r+3,c+3],[r+4,c+4]]
-            }
+              // 横五个
+              if (c < 12 && color == chessmen[r][c+1].color && color == chessmen[r][c+2].color && color == chessmen[r][c+3].color && color == chessmen[r][c+4].color) {
+                this.wing = color
+                this.wingChess = [[r,c],[r,c+1],[r,c+2],[r,c+3],[r,c+4]]
+              }
 
-            //左下斜五个
-            if (
-              color !== null && color == chessmen[r+1][c-1].color&& color == chessmen[r+2][c-2].color&& color == chessmen[r+3][c-3].color&& color == chessmen[r+4][c-4].color
-            ) {
-              this.wing = color
-              this.wingChess = [[r,c],[r+1,c-1],[r+2,c-2],[r+3,c-3],[r+4,c-4]]
-            }
+              //竖五个
+              if ( r < 12 && color == chessmen[r+1][c].color&& color == chessmen[r+2][c].color&& color == chessmen[r+3][c].color&& color == chessmen[r+4][c].color) {
+                this.wing = color
+                this.wingChess = [[r,c],[r+1,c],[r+2,c],[r+3,c],[r+4,c]]
+              }
+
+
+              //左上斜五个
+              if (c < 12 && r < 12 && color == chessmen[r+1][c+1].color&& color == chessmen[r+2][c+2].color&& color == chessmen[r+3][c+3].color && color == chessmen[r+4][c+4].color) {
+                this.wing = chessmen[r][c].color
+                this.wingChess = [[r,c],[r+1,c+1],[r+2,c+2],[r+3,c+3],[r+4,c+4]]
+              }
+
+              //左下斜五个
+              if (r < 12 && c > 4 && chessmen[r+4] && chessmen[r+4][c-4] &&  color == chessmen[r+1][c-1].color&& color == chessmen[r+2][c-2].color&& color == chessmen[r+3][c-3].color && color == chessmen[r+4][c-4].color) {
+                this.wing = color
+                this.wingChess = [[r,c],[r+1,c-1],[r+2,c-2],[r+3,c-3],[r+4,c-4]]
+              }
+              
+            } 
           }
         }
       },
