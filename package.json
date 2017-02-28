@@ -14,7 +14,10 @@
     "m-animes-move":"cd m-animes && node move",
     "user-dev": "cd user && cross-env NODE_ENV=dev webpack-dev-server --inline --hot",
     "user-build": "cd user && cross-env NODE_ENV=production webpack --progress --hide-modules",
-    "user-move":"cd user && node move"
+    "user-move":"cd user && node move",
+    "gomoku-dev": "cd gomoku && cross-env NODE_ENV=dev webpack-dev-server --inline --hot",
+    "gomoku-build": "cd gomoku && cross-env NODE_ENV=production webpack --progress --hide-modules",
+    "gomoku-move":"cd gomoku && node move"
   },
   "dependencies": {
     "autoprefixer": "^6.5.3",
