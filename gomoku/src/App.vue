@@ -10,7 +10,10 @@
       <canvas class="background" width="640" height="640" ref="canvas"></canvas>
       <dt ref="dt">
         <dl v-for="r in 15">
-          <dd v-for="c in 15" :class="chessmen[r][c].color" @click="move(r,c)"></dd>
+          <dd 
+            v-for="c in 15" 
+            :class="[chessmen[r][c].color,{'w-hover': !chessmen[r][c].color && color == 'w'},{'b-hover': !chessmen[r][c].color && color == 'b'}]" 
+            @click="move(r,c)"></dd>
         </dl>
       </dt>
     </div>
