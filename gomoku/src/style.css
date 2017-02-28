@@ -37,12 +37,12 @@ dd {
 dd.w {
   border-color: #333;
   background-color: #fff;
-  cursor: not-allowed;
+  cursor: default;
 }
 dd.b {
   border-color: #333;
   background-color: #333;
-  cursor: not-allowed;
+  cursor: default;
 }
 .wingChess {
   position: absolute;
