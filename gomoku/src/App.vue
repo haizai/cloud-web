@@ -128,6 +128,8 @@
             return '黑棋胜'
           case 'w':
             return '白棋胜'
+          case 'draw':
+            return '平局'
           default:
             return ''
         }
@@ -178,6 +180,10 @@
             } 
           }
         }
+
+        if (this.history.length === 225) {
+          this.wing = 'draw'
+        }
       },
       toggleColor() {
         if (this.color == 'b') {
@@ -201,8 +207,8 @@
         }
         this.chessmen[r][c].color = this.color
 
-        this.test()
         this.history.push([r,c])
+        this.test()
         this.$forceUpdate()
         this.toggleColor()
 
