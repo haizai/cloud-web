@@ -29,16 +29,24 @@
   border: 4px solid rgba(0, 0, 0, .2);
   margin-left: 160px;
 }
-.face-type {
+.face-style {
   border-bottom: 1px solid #ccc;
   margin: 30px 0;
 }
-.face-type li {
+.face-style li {
   width: 40px;
-  margin: 0 50px;
+  padding: 0 50px;
   height: 40px;
   line-height: 40px;
   text-align: center;
   display: inline-block;
   font-size: 14px;
+  cursor: pointer;
+}
+.face-style li:hover {
+  color: #00a1d6;
+}
+.face-style li.active {
+  background-color: #00a1d6;
+  color: #fff;
 }

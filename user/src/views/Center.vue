@@ -40,7 +40,6 @@
           this.$http.get(this.urlPrefix + 'getUserInCenter').then(res=>{
             if (res.body.state === 1) {
               var user = res.body.user
-              console.log(res,user)
               if (!user.face) user.face = {style: 'boy','name': 1}
               this.user = res.body.user
             }

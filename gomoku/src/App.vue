@@ -44,6 +44,11 @@
       let w = 40 //格子边长
       let star = 4 //星半径
 
+      ctx.fillStyle = 'rgba(255,150,50,0.1)'
+      ctx.fillRect(w,w,w * 14,w * 14)
+
+
+
       ctx.beginPath()
 
       ctx.fillStyle = '#333'
@@ -180,7 +185,7 @@
           return
         }
         if (this.chessmen[r][c].color !== null) {
-          console.log(r,c,'已有落子')
+          // console.log(r,c,'已有落子')
           return
         }
         this.chessmen[r][c].color = this.color
