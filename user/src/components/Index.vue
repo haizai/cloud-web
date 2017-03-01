@@ -3,7 +3,7 @@
     <h2 class="content-title" @click="log()">首页</h2>
     <div id="index">
       <div class="index-first">
-        <img v-if="user.face.style" class="index-face" :src="'img/face/defalut/' + user.face.style + '/' + user.face.name  + '.png'">
+        <img v-if="user.face.style" class="index-face" :src="'img/face/defalut/' + user.face.style + '/' + user.face.name  + '.png'" @click="setActive('face')">
         <div class="index-first-right">
           <span class="index-account" @click="log()">{{user.account}}</span>
           <span class="index-uid">uid: <span>{{user.uid}}</span></span>
@@ -144,6 +144,10 @@
             tip('城市修改失败','err')
           }
         })
+      },
+      setActive(active) {
+        console.log(active)
+        this.$emit('setActive',active)
       }
     }
   }

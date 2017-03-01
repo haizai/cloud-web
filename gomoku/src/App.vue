@@ -78,10 +78,10 @@
       ctx.textAlign = 'center'
       var letters = ['A','B','C','D','E','F','G','H','I','G','K','L','M','N','O']
       letters.forEach((letter,index)=>{
-        ctx.fillText(letter,(index+1)*w,w-24)
+        ctx.fillText(letter,(index+1)*w,w-26)
       })
       for(let i = 1; i <= 15; i++) {
-        ctx.fillText(i,w-25,i*w+6)
+        ctx.fillText(i,w-32,i*w+6)
       }
 
     },
@@ -90,7 +90,7 @@
         color:'b',
         wing: null,
         wingChess:[],
-        lastMove: null,
+        history: [],
       }
     },
     computed:{
@@ -191,7 +191,7 @@
         this.chessmen[r][c].color = this.color
 
         this.test()
-        this.lastMove = [r,c]
+        this.history.push([r,c])
         this.$forceUpdate()
         this.toggleColor()
 
@@ -210,10 +210,10 @@
         this.wingChess = []
       },
       regret() {
-        if (!this.wing && this.lastMove) {
-          this.chessmen[this.lastMove[0]][this.lastMove[1]].color = null
+        if (!this.wing && this.history.length > 0) {
+          let lastMove = this.history.pop()
+          this.chessmen[lastMove[0]][lastMove[1]].color = null
           this.$forceUpdate()
-          this.lastMove = null
           this.toggleColor()
         }
       }

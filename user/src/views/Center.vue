@@ -70,7 +70,10 @@
       }
     },
     methods: {
-      log(){console.log(this)}
+      log(){console.log(this)},
+      setActive(active) {
+        this.active = active
+      }
     },
   }
 </script>
