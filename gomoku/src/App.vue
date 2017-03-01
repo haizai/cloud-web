@@ -6,7 +6,18 @@
       <button @click="regret()">悔棋</button>
     </p>
     <div class="chessboard">
-      <span class="wingChess" v-for="chess in wingChessSet" :class='wing' :style="{'margin-top': chess[0] * 40 - 5 + 'px' ,'margin-left': chess[1] * 40 - 5 + 'px'}"></span>
+      <span
+        v-if="history.length > 0" 
+        class="activeChess" 
+        :class='color' 
+        :style="{'margin-top': history[history.length-1][0] * 40 - 5 + 'px' ,'margin-left': history[history.length-1][1] * 40 - 5 + 'px'}">
+      </span>
+      <span 
+        class="activeChess" 
+        v-for="chess in wingChessSet" 
+        :class="{b: wing == 'w', w: wing == 'b'}" 
+        :style="{'margin-top': chess[0] * 40 - 5 + 'px' ,'margin-left': chess[1] * 40 - 5 + 'px'}">
+      </span>
       <canvas class="background" width="640" height="640" ref="canvas"></canvas>
       <dt ref="dt">
         <dl v-for="r in 15">
