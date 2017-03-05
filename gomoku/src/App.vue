@@ -1,10 +1,7 @@
 <template>
 	<div id="gomoku">
-    <h1 @click="log()">gomoku</h1>
-    <p class="now">{{tip}}
-      <button @click="reset()">重开</button>
-      <button @click="regret()">悔棋</button>
-    </p>
+    <!-- <h1 @click="log()">gomoku</h1> -->
+    <p class="now">{{tip}}</p>
     <div class="chessboard">
       <span
         v-if="history.length > 0" 
@@ -23,12 +20,19 @@
         <dl v-for="r in 15">
           <dd 
             v-for="c in 15" 
-            :class="[chessmen[r][c].color,{'w-hover': !chessmen[r][c].color && color == 'w'},{'b-hover': !chessmen[r][c].color && color == 'b'}]" 
+            :class="[chessmen[r][c].color,{'w-hover': !chessmen[r][c].color && color == 'w'},{'b-hover': stage == 'playing' && !chessmen[r][c].color && color == 'b'}]" 
             @click="move(r,c)"></dd>
         </dl>
       </dt>
     </div>
-
+    <ul class="btns">
+      <li :class="{active: stage == 'playing' && history.length > 0}" @click="regret()">悔棋</li>
+      <li :class="{active: stage=='playing'}" @click="givein()">认输</li>
+      <li :class="{active: stage!=='playing'}" @click="start()">开始</li>
+      <li :class="{active: stage=='playing'}" @click="draw()">和棋</li>
+    </ul>
+    <audio src="audio/chess_move.mp3" preload="auto" ref="audioMove"></audio>
+    <audio src="audio/background.mp3" preload="auto" autoplay></audio>
 	</div>
 </template>
 
@@ -56,7 +60,7 @@
       let star = 4 //星半径
 
       ctx.fillStyle = 'rgba(255,150,50,0.1)'
-      ctx.fillRect(w,w,w * 14,w * 14)
+      ctx.fillRect(w/2,w/2,w * 15,w * 15)
 
 
 
@@ -100,6 +104,7 @@
       return {
         color:'b',
         wing: null,
+        stage: 'wait', // wait playing end
         wingChess:[],
         history: [],
       }
@@ -123,13 +128,23 @@
       tip() {
         switch (this.wing) {
           case null:
-            return '执' + this.chineseColor;
+            if (this.stage == 'wait') {
+              return '请按开始'
+            } else {
+              return '执' + this.chineseColor;
+            }
           case 'b':
             return '黑棋胜'
           case 'w':
             return '白棋胜'
+          case 'bgivein':
+            return '黑棋认输，白棋胜'
+          case 'wgivein':
+            return '白棋认输，黑棋胜'
+          case 'draw_225':
+            return '棋子落满，和棋'
           case 'draw':
-            return '平局'
+            return '和棋'
           default:
             return ''
         }
@@ -139,6 +154,15 @@
     methods:{
       log(){
         console.log(this)
+      },
+      start() {
+        if (this.stage == 'wait') {
+          this.stage = 'playing'
+        }
+        if (this.stage == 'end') {
+          this.stage = 'playing'
+          this.reset()
+        }
       },
       test() {
         let chessmen = this.chessmen
@@ -156,12 +180,14 @@
               if (c < 12 && color == chessmen[r][c+1].color && color == chessmen[r][c+2].color && color == chessmen[r][c+3].color && color == chessmen[r][c+4].color) {
                 this.wing = color
                 this.wingChess.splice(0,0,[r,c],[r,c+1],[r,c+2],[r,c+3],[r,c+4])
+                this.stage = 'end'
               }
 
               //竖五个
               if ( r < 12 && color == chessmen[r+1][c].color&& color == chessmen[r+2][c].color&& color == chessmen[r+3][c].color&& color == chessmen[r+4][c].color) {
                 this.wing = color
                 this.wingChess.splice(0,0,[r,c],[r+1,c],[r+2,c],[r+3,c],[r+4,c])
+                this.stage = 'end'
               }
 
 
@@ -169,12 +195,14 @@
               if (c < 12 && r < 12 && color == chessmen[r+1][c+1].color&& color == chessmen[r+2][c+2].color&& color == chessmen[r+3][c+3].color && color == chessmen[r+4][c+4].color) {
                 this.wing = chessmen[r][c].color
                 this.wingChess.splice(0,0,[r,c],[r+1,c+1],[r+2,c+2],[r+3,c+3],[r+4,c+4])
+                this.stage = 'end'
               }
 
               //左下斜五个
               if (r < 12 && c > 4 && chessmen[r+4] && chessmen[r+4][c-4] &&  color == chessmen[r+1][c-1].color&& color == chessmen[r+2][c-2].color&& color == chessmen[r+3][c-3].color && color == chessmen[r+4][c-4].color) {
                 this.wing = color
                 this.wingChess.splice(0,0,[r,c],[r+1,c-1],[r+2,c-2],[r+3,c-3],[r+4,c-4])
+                this.stage = 'end'
               }
               
             } 
@@ -182,7 +210,8 @@
         }
 
         if (this.history.length === 225) {
-          this.wing = 'draw'
+          this.wing = 'draw_225'
+          this.stage = 'end'
         }
       },
       toggleColor() {
@@ -198,6 +227,11 @@
        * @param  Int c column列 
        */
       move(r,c) {
+
+        if (this.stage !== 'playing') {
+          return
+        }
+
         if (this.wing) {
           return
         }
@@ -206,6 +240,8 @@
           return
         }
         this.chessmen[r][c].color = this.color
+
+        this.$refs.audioMove.play()
 
         this.history.push([r,c])
         this.test()
@@ -224,14 +260,29 @@
         }
         this.color = 'b'
         this.wing = null
+        this.history = []
         this.wingChess = []
       },
       regret() {
-        if (!this.wing && this.history.length > 0) {
+        if (this.stage == 'playing' && this.history.length > 0) {
           let lastMove = this.history.pop()
           this.chessmen[lastMove[0]][lastMove[1]].color = null
           this.$forceUpdate()
           this.toggleColor()
+        }
+      },
+      givein() {
+        if (this.stage == 'playing') {
+          this.wing = this.color + 'givein'
+          this.stage = 'end'
+          this.$forceUpdate()
+        }
+      },
+      draw() {
+        if (this.stage == 'playing') {
+          this.wing = 'draw'
+          this.stage = 'end'
+          this.$forceUpdate()
         }
       }
     }
