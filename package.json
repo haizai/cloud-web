@@ -8,14 +8,19 @@
   "scripts": {
     "animes-dev": "cd animes && cross-env NODE_ENV=dev webpack-dev-server --inline --hot",
     "animes-build": "cd animes && cross-env NODE_ENV=production webpack --progress --hide-modules",
+    "animes-move": "cross-env name=animes node move",
+
     "m-animes-dev": "cd m-animes && cross-env NODE_ENV=dev webpack-dev-server --inline --hot",
     "m-animes-build": "cd m-animes && cross-env NODE_ENV=production webpack --progress --hide-modules",
+
     "user-dev": "cd user && cross-env NODE_ENV=dev webpack-dev-server --inline --hot",
     "user-build": "cd user && cross-env NODE_ENV=production webpack --progress --hide-modules",
+    "user-move": "cross-env name=user node move",
+
     "gomoku-dev": "cd gomoku && cross-env NODE_ENV=dev webpack-dev-server --inline --hot",
-    "gomoku-build": "cd gomoku && cross-env NODE_ENV=production webpack --progress --hide-modules"
+    "gomoku-build": "cd gomoku && cross-env NODE_ENV=production webpack --progress --hide-modules",
+    "gomoku-move": "cross-env name=gomoku node move"
   },
-  // cross-env name=*** node move 移动到cloud中
   "dependencies": {
     "autoprefixer": "^6.5.3",
     "babel-core": "^6.18.0",
