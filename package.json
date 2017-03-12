@@ -2,23 +2,20 @@
   "name": "cloud-web",
   "description": "个人云服务器前端部分",
   "author": "haizai",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "private": true,
   "license": "ISC",
   "scripts": {
     "animes-dev": "cd animes && cross-env NODE_ENV=dev webpack-dev-server --inline --hot",
     "animes-build": "cd animes && cross-env NODE_ENV=production webpack --progress --hide-modules",
-    "animes-move":"cd animes && node move",
     "m-animes-dev": "cd m-animes && cross-env NODE_ENV=dev webpack-dev-server --inline --hot",
     "m-animes-build": "cd m-animes && cross-env NODE_ENV=production webpack --progress --hide-modules",
-    "m-animes-move":"cd m-animes && node move",
     "user-dev": "cd user && cross-env NODE_ENV=dev webpack-dev-server --inline --hot",
     "user-build": "cd user && cross-env NODE_ENV=production webpack --progress --hide-modules",
-    "user-move":"cd user && node move",
     "gomoku-dev": "cd gomoku && cross-env NODE_ENV=dev webpack-dev-server --inline --hot",
-    "gomoku-build": "cd gomoku && cross-env NODE_ENV=production webpack --progress --hide-modules",
-    "gomoku-move":"cd gomoku && node move"
+    "gomoku-build": "cd gomoku && cross-env NODE_ENV=production webpack --progress --hide-modules"
   },
+  // cross-env name=*** node move 移动到cloud中
   "dependencies": {
     "autoprefixer": "^6.5.3",
     "babel-core": "^6.18.0",
