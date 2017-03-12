@@ -5,7 +5,7 @@
     </h2>
     <div class="face-myface">
       <span>当前头像：</span>
-      <img class="face-now" :src="'img/face/defalut/' + face.style + '/' + face.name + '.png'">
+      <img class="face-now" :src="'img/face/' + face.style + '/' + face.name + '.png'">
     </div>
     <ul class="face-style">
       <li :class="{active: style == 'boy'}" @click="style = 'boy'">男性</li>
@@ -20,7 +20,7 @@
           style="margin-left:150px;margin-top:18px;"></i>
         <img 
           class="face-face" 
-          :src="'img/face/defalut/boy/' + n + '.png'" 
+          :src="'img/face/boy/' + n + '.png'" 
           :class="{active: face.style == 'boy' && face.name == n}" 
           @click="setFace('boy',n)">
       </li>
@@ -32,7 +32,7 @@
           style="margin-left:150px;margin-top:18px;"></i>
         <img 
           class="face-face" 
-          :src="'img/face/defalut/girl/' + n + '.png'" 
+          :src="'img/face/girl/' + n + '.png'" 
           :class="{active: face.style == 'girl' && face.name == n}" 
           @click="setFace('girl',n)">
       </li>

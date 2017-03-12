@@ -20,7 +20,7 @@
         <dl v-for="r in 15">
           <dd 
             v-for="c in 15" 
-            :class="[chessmen[r][c].color,{'w-hover': !chessmen[r][c].color && color == 'w'},{'b-hover': stage == 'playing' && !chessmen[r][c].color && color == 'b'}]" 
+            :class="[chessmen[r][c].color,{'w-hover': stage == 'playing' && !chessmen[r][c].color && color == 'w'},{'b-hover': stage == 'playing' && !chessmen[r][c].color && color == 'b'}]" 
             @click="move(r,c)"></dd>
         </dl>
       </dt>
@@ -35,7 +35,8 @@
       <audio src="audio/chess_move.mp3" preload="auto" ref="audioMove"></audio>
       <audio src="audio/end.mp3" preload="auto" ref="audioEnd"></audio>
       <audio src="audio/click.mp3" preload="auto" ref="audioClick"></audio>
-      <audio src="audio/background.mp3" preload="auto" autoplay></audio>
+      <audio src="audio/start.mp3" preload="auto" ref="audioStart"></audio>
+      <audio src="audio/background.mp3" preload="auto" autoplay loop></audio>
     </div>
 	</div>
 </template>
@@ -256,7 +257,7 @@
         if (this.stage !== 'playing') {
           this.stage = 'playing'
           this.reset()
-          this.$refs.audioClick.play()
+          this.$refs.audioStart.play()
         }
       },
       reset() {
