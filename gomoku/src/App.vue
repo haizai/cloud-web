@@ -1,8 +1,11 @@
 <template>
 	<div id="gomoku">
-    <!-- <h1 @click="log()">gomoku</h1> -->
     <p class="now">{{tip}}</p>
     <div class="chessboard">
+      <i 
+        class="icon-sound" 
+        @click="toggleBackgroundAudio()" 
+        :class="{max:backgroundAudio,mute:!backgroundAudio}"></i>
       <span
         v-if="history.length > 0" 
         class="activeChess" 
@@ -36,7 +39,7 @@
       <audio src="audio/end.mp3" preload="auto" ref="audioEnd"></audio>
       <audio src="audio/click.mp3" preload="auto" ref="audioClick"></audio>
       <audio src="audio/start.mp3" preload="auto" ref="audioStart"></audio>
-      <audio src="audio/background.mp3" preload="auto" autoplay loop></audio>
+      <audio src="audio/background.mp3" preload="auto" ref="audioBackground" autoplay loop></audio>
     </div>
 	</div>
 </template>
@@ -112,6 +115,7 @@
         stage: 'wait', // wait playing end
         wingChess:[],
         history: [],
+        backgroundAudio: true //
       }
     },
     computed:{
@@ -157,6 +161,10 @@
       }
     },
     methods:{
+      toggleBackgroundAudio(){
+        this.backgroundAudio ? this.$refs.audioBackground.pause() : this.$refs.audioBackground.play()
+        this.backgroundAudio = !this.backgroundAudio
+      },
       log(){
         console.log(this)
       },

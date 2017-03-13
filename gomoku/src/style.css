@@ -13,7 +13,7 @@ table { border-collapse: collapse; border-spacing: 0; }
 .now {
   text-align: center;
   font-size: 18px;
-  margin-top: 10px;
+  margin-top: 12px;
 } 
 .chessboard {
   position: relative;
@@ -97,4 +97,22 @@ dd.b-hover:hover {
 .btns li.active:hover {
   background: rgb(187,146,114);
   cursor: pointer;
+}
+
+i {
+  display: inline-block;
+}
+.icon-sound {
+  width: 24px;
+  height: 24px;
+  position: absolute;
+  right: 20px;
+  top: -45px;
+  cursor: pointer;
+}
+.icon-sound.max {
+  background: url('../img/sound_max.png') no-repeat;
+}
+.icon-sound.mute {
+  background: url('../img/sound_mute.png') no-repeat;
 }
