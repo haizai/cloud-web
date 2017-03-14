@@ -69,6 +69,7 @@ dd.b-hover:hover {
   width: 10px;
   height: 10px;
   z-index: 10;
+  border-radius: 40%;
 }
 .activeChess.w {
   background-color: #fff;

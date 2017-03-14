@@ -17,7 +17,7 @@
     "user-build": "cd user && cross-env NODE_ENV=production webpack --progress --hide-modules",
     "user-move": "cross-env name=user node move",
 
-    "gomoku-dev": "cd gomoku && cross-env NODE_ENV=dev webpack-dev-server --inline --hot",
+    "gomoku-dev": "cd gomoku && cross-env NODE_ENV=dev webpack-dev-server --inline --hot --port 8081",
     "gomoku-build": "cd gomoku && cross-env NODE_ENV=production webpack --progress --hide-modules",
     "gomoku-move": "cross-env name=gomoku node move"
   },
