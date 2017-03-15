@@ -40,6 +40,8 @@
 
           if (res.body.text == 'b') {
             this.waitOther()
+          } else if (res.body.text == 'w') {
+            this.$router.push({name:'room'})
           }
         })
       },
@@ -48,10 +50,15 @@
 
           console.log(res.body)
 
-          if (res.body.bool == true && res.body.stage == "notfull") {
-            setTimeout(()=>{
-              this.waitOther()
-            },1000)
+          if (res.body.bool == true) {
+
+            if (res.body.stage == "notfull") {
+              setTimeout(()=>{
+                this.waitOther()
+              },1000)
+            } else if (res.body.stage == "wait") {
+              this.$router.push({name:'room'})
+            }
           }
         })
       }
