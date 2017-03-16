@@ -18,10 +18,15 @@
 
 
   <div id="gomoku" style="margin-left:250px">
-    <p class="now">{{tip}}</p>
+    <p class="now">{{tipComputed}}</p>
     <div class="chessboard">
-      <i 
-        class="icon-sound"></i>
+      <span
+        v-if="activeChess.color !== null" 
+        class="activeChess" 
+        :class='activeChess.color' 
+        :style="{'margin-top': activeChess.r * 40 - 5 + 'px' ,'margin-left': activeChess.c * 40 - 5 + 'px'}">
+      </span>
+      <i class="icon-sound"></i>
       <span
         v-if="history.length > 0" 
         class="activeChess" >
@@ -34,7 +39,8 @@
         <dl v-for="r in 15">
           <dd 
             v-for="c in 15" 
-            :class="[chessmen[r][c].color,{'w-hover': stage == 'playing' && !chessmen[r][c].color && color == 'w'},{'b-hover': stage == 'playing' && !chessmen[r][c].color && color == 'b'}]" 
+            :class="[chessmen[r][c].color,{'w-hover': stage == 'playing' && !chessmen[r][c].color && color == 'w' && nowColor == 'w'},{'b-hover': stage == 'playing' && !chessmen[r][c].color && color == 'b' && nowColor == 'b'}]" 
+            @click="move(r,c)"
             ></dd>
         </dl>
       </dt>
@@ -78,12 +84,28 @@
         history: [],
         backgroundAudio: true,
         tip: '请按开始',
-        ableRealy: true
+        ableRealy: true,
+        nowColor:'b',
+        activeChess: {
+          r: null,
+          c: null,
+          color: null
+        },
       }
     },
     computed:{
       urlPrefix () {
         return process.env.NODE_ENV === 'production' ? '/ajax/' : 'http://localhost/ajax/'
+      },
+      tipComputed() {
+        let meColor = this.color == 'b' ? '黑' : '白'
+        let after = ''
+        if (this.stage == 'wait') {
+          after = this.tip
+        } else if (this.stage == 'playing') {
+          after = this.color == this.nowColor ? '请落子' : '等待对方落子'
+        }
+        return '执' + meColor + ' ' + after
       },
     },
     created(){
@@ -104,11 +126,6 @@
       log(){
         console.log(this)
       },
-      tipComputed(color) {
-        let meColor = this.color == 'b' ? '黑' : '白'
-        let after = this.color == color ? '请落子' : '等待对方落子'
-        return '执' + meColor + ' ' + after
-      },
       checkGomoku() {
         this.$http.get(this.urlPrefix+'gomoku/checkGomoku').then(res => {
           if (res.body.text == 'in gomoku') {
@@ -116,6 +133,8 @@
             this.me = res.body.me
             this.other = res.body.other
             this.color = res.body.color
+          } else {
+            this.$router.push({name: 'online'})
           }
         })
       },
@@ -127,8 +146,7 @@
               this.waitRealy()
               this.tip = '请等待对方开始'
             } else {
-              console.log('AllReady')
-              this.tip = this.tipComputed('b')
+              this.start()
             }
           }
         })
@@ -145,11 +163,81 @@
                 this.waitRealy()
               },1000)
             } else if (res.body.stage == "playing") {
-              console.log('AllReady')
-              this.tipComputed('b')
+              this.start()
             }
           }
 
+        })
+      },
+      start() {
+        this.stage = 'playing'
+        this.nowColor = 'b'
+        this.waitMove()
+      },
+      move(r,c) {
+
+        if (this.stage !== 'playing') {
+          return
+        }
+        if (this.color !== this.nowColor) {
+          return
+        }
+
+        if (this.wing) {
+          return
+        }
+        if (this.chessmen[r][c].color !== null) {
+          // console.log(r,c,'已有落子')
+          return
+        }
+        this.chessmen[r][c].color = this.color
+
+        // this.$refs.audioMove.play()
+
+        // this.history.push([r,c])
+        // this.test()
+        // if (this.stage == 'playing') {
+        //   this.toggleColor()
+        // }
+        
+        this.$http.post(this.urlPrefix+'gomoku/move',{r,c}).then( res => {
+          console.log(res.body)
+          if (res.body.bool) {
+            this.activeChess.r = r
+            this.activeChess.c = c
+            this.activeChess.color = this.color == 'b' ? 'w' : 'b'
+            this.waitMove()
+          }
+
+          if(res.body.text == 'continue') {
+            this.nowColor = this.nowColor == 'b' ? 'w' : 'b'
+          }
+        })
+
+      },
+      waitMove() {
+        this.$http.get(this.urlPrefix+'gomoku/getColor').then(res => {
+
+          console.log('wait',res.body)
+
+          if (res.body.bool == true) {
+
+            if (res.body.text !== this.color) {
+              setTimeout(()=>{
+                this.waitMove()
+              },1000)
+            } else {
+              if (res.body.chess) {
+                let r = res.body.chess[0]
+                let c = res.body.chess[1]
+                this.chessmen[r][c].color = this.nowColor
+                this.activeChess.r = r
+                this.activeChess.c = c
+                this.activeChess.color = this.color
+              }
+              this.nowColor = res.body.text
+            }
+          }
         })
       }
     }
