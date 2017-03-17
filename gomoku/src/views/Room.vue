@@ -56,7 +56,7 @@
       <audio src="audio/end.mp3" preload="auto" ref="audioEnd"></audio>
       <audio src="audio/click.mp3" preload="auto" ref="audioClick"></audio>
       <audio src="audio/start.mp3" preload="auto" ref="audioStart"></audio>
-      <audio src="audio/background.mp3" preload="auto" ref="audioBackground"></audio>
+<!--       <audio src="audio/background.mp3" preload="auto" ref="audioBackground"></audio> -->
     </div>
   </div>
 
@@ -154,6 +154,7 @@
         })
       },
       ready() {
+        this.$refs.audioClick.play()
         this.$http.get(this.urlPrefix+'gomoku/ready').then(res => {
           if (res.body.bool) {
             this.ableRealy = false
@@ -185,6 +186,7 @@
         })
       },
       start() {
+        this.$refs.audioStart.play()
         this.stage = 'playing'
         this.nowColor = 'b'
         this.getColor()
@@ -207,16 +209,10 @@
         }
         this.chessmen[r][c].color = this.color
 
-        // this.$refs.audioMove.play()
-
-        // this.history.push([r,c])
-        // this.test()
-        // if (this.stage == 'playing') {
-        //   this.toggleColor()
-        // }
+        this.$refs.audioMove.play()
         
         this.$http.post(this.urlPrefix+'gomoku/move',{r,c}).then( res => {
-          console.log(res.body)
+          // console.log(res.body)
           if (res.body.bool) {
 
             let color = this.color == 'b' ? 'w' : 'b'
@@ -251,7 +247,7 @@
               });
               this.wing = res.body.wing
               this.stage = 'end'
-
+              this.$refs.audioEnd.play()
               this.$forceUpdate()
 
             } else {
@@ -268,7 +264,7 @@
                   let r = res.body.chess[0]
                   let c = res.body.chess[1]
                   this.chessmen[r][c].color = this.nowColor
-
+                  this.$refs.audioMove.play()
                   this.activeChess = [{r,c,color: this.color}]
                 }
                 this.nowColor = res.body.text
