@@ -79,7 +79,8 @@
         stage: 'wait', // wait playing end
         wingChess:[],
         history: [],
-        backgroundAudio: true //
+        backgroundAudio: true, //
+
       }
     },
     computed:{

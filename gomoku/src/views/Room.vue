@@ -21,10 +21,10 @@
     <p class="now">{{tipComputed}}</p>
     <div class="chessboard">
       <span
-        v-if="activeChess.color !== null" 
+        v-for="chess in activeChess"
         class="activeChess" 
-        :class='activeChess.color' 
-        :style="{'margin-top': activeChess.r * 40 - 5 + 'px' ,'margin-left': activeChess.c * 40 - 5 + 'px'}">
+        :class='chess.color' 
+        :style="{'margin-top': chess.r * 40 - 5 + 'px' ,'margin-left': chess.c * 40 - 5 + 'px'}">
       </span>
       <i class="icon-sound"></i>
       <span
@@ -86,11 +86,11 @@
         tip: '请按开始',
         ableRealy: true,
         nowColor:'b',
-        activeChess: {
+        activeChess: [{
           r: null,
           c: null,
           color: null
-        },
+        }],
       }
     },
     computed:{
@@ -101,11 +101,26 @@
         let meColor = this.color == 'b' ? '黑' : '白'
         let after = ''
         if (this.stage == 'wait') {
+
           after = this.tip
+          return '执' + meColor + ' ' + after
+
         } else if (this.stage == 'playing') {
+
           after = this.color == this.nowColor ? '请落子' : '等待对方落子'
+          return '执' + meColor + ' ' + after
+
+        } else if (this.stage == 'end') {
+
+          if (this.wing == this.color) {
+            return '你贏了'
+          } else if (this.wing == 'draw_225') {
+            return '棋子落满，和棋'
+          } else {
+            return '你输了'
+          }
         }
-        return '执' + meColor + ' ' + after
+        
       },
     },
     created(){
@@ -172,7 +187,7 @@
       start() {
         this.stage = 'playing'
         this.nowColor = 'b'
-        this.waitMove()
+        this.getColor()
       },
       move(r,c) {
 
@@ -203,40 +218,65 @@
         this.$http.post(this.urlPrefix+'gomoku/move',{r,c}).then( res => {
           console.log(res.body)
           if (res.body.bool) {
-            this.activeChess.r = r
-            this.activeChess.c = c
-            this.activeChess.color = this.color == 'b' ? 'w' : 'b'
-            this.waitMove()
+
+            let color = this.color == 'b' ? 'w' : 'b'
+            this.activeChess = [{r,c,color}]
+            this.getColor()
+
+            if(res.body.text == 'continue') {
+              this.nowColor = this.nowColor == 'b' ? 'w' : 'b'
+            }
           }
 
-          if(res.body.text == 'continue') {
-            this.nowColor = this.nowColor == 'b' ? 'w' : 'b'
-          }
         })
 
       },
-      waitMove() {
+      getColor() {
         this.$http.get(this.urlPrefix+'gomoku/getColor').then(res => {
 
-          console.log('wait',res.body)
+          
 
           if (res.body.bool == true) {
 
-            if (res.body.text !== this.color) {
-              setTimeout(()=>{
-                this.waitMove()
-              },1000)
+            if (res.body.stage && res.body.stage == 'end') {
+              //一局结束
+              console.log('end', res.body)
+              let r = res.body.chess[0]
+              let c = res.body.chess[1]
+              this.chessmen[r][c].color = this.nowColor
+
+              let color = this.nowColor == 'b' ? 'w' : 'b'
+              this.activeChess = res.body.wingChess.map( chess => {
+                return {r: chess[0],c: chess[1],color}
+              });
+              this.wing = res.body.wing
+              this.stage = 'end'
+
+              this.$forceUpdate()
+
             } else {
-              if (res.body.chess) {
-                let r = res.body.chess[0]
-                let c = res.body.chess[1]
-                this.chessmen[r][c].color = this.nowColor
-                this.activeChess.r = r
-                this.activeChess.c = c
-                this.activeChess.color = this.color
+
+              console.log('wait',res.body)
+              if (res.body.text !== this.color) {
+                // 对方未落子
+                setTimeout(()=>{
+                  this.getColor()
+                },1000)
+              } else {
+                // 对方落子
+                if (res.body.chess) {
+                  let r = res.body.chess[0]
+                  let c = res.body.chess[1]
+                  this.chessmen[r][c].color = this.nowColor
+
+                  this.activeChess = [{r,c,color: this.color}]
+                }
+                this.nowColor = res.body.text
               }
-              this.nowColor = res.body.text
             }
+
+
+
           }
         })
       }
