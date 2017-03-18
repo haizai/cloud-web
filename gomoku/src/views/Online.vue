@@ -37,31 +37,11 @@
       enterRoom() {
         this.$http.get(this.urlPrefix+'gomoku/roomEnter',{params:{num:1}}).then(res => {
           console.log(res.body)
-
-          if (res.body.text == 'b') {
-            this.waitOther()
-          } else if (res.body.text == 'w') {
+          if (res.body.bool) {
             this.$router.push({name:'room'})
           }
         })
       },
-      waitOther() {
-        this.$http.get(this.urlPrefix+'gomoku/getRoomStage',{params:{num:1}}).then(res => {
-
-          console.log(res.body)
-
-          if (res.body.bool == true) {
-
-            if (res.body.stage == "notfull") {
-              setTimeout(()=>{
-                this.waitOther()
-              },1000)
-            } else if (res.body.stage == "wait") {
-              this.$router.push({name:'room'})
-            }
-          }
-        })
-      }
     }
   }
 </script>

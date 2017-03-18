@@ -141,6 +141,13 @@
       log(){
         console.log(this)
       },
+      toggleColor(color) {
+        if (color == 'b') {
+          return 'w'
+        } else {
+          return 'b'
+        }
+      },
       checkGomoku() {
         this.$http.get(this.urlPrefix+'gomoku/checkGomoku').then(res => {
           if (res.body.text == 'in gomoku') {
@@ -155,41 +162,20 @@
       },
       ready() {
         this.$refs.audioClick.play()
+        this.ableRealy = false
         this.$http.get(this.urlPrefix+'gomoku/ready').then(res => {
           if (res.body.bool) {
-            this.ableRealy = false
-            if (!res.body.isAllReady) {
-              this.waitRealy()
-              this.tip = '请等待对方开始'
-            } else {
-              this.start()
-            }
+            this.start()
           }
-        })
-      },
-      waitRealy() {
-        this.$http.get(this.urlPrefix+'gomoku/getRoomStage').then(res => {
-
-          console.log(res.body)
-
-          if (res.body.bool == true) {
-
-            if (res.body.stage == "wait") {
-              setTimeout(()=>{
-                this.waitRealy()
-              },1000)
-            } else if (res.body.stage == "playing") {
-              this.start()
-            }
-          }
-
         })
       },
       start() {
         this.$refs.audioStart.play()
         this.stage = 'playing'
         this.nowColor = 'b'
-        this.getColor()
+        if (this.color == 'w') {
+          this.waitMove()
+        }
       },
       move(r,c) {
 
@@ -211,21 +197,26 @@
 
         this.$refs.audioMove.play()
         
+        this.showMove(r,c)
         this.$http.post(this.urlPrefix+'gomoku/move',{r,c}).then( res => {
-          // console.log(res.body)
           if (res.body.bool) {
-
-            let color = this.color == 'b' ? 'w' : 'b'
-            this.activeChess = [{r,c,color}]
-            this.getColor()
-
-            if(res.body.text == 'continue') {
-              this.nowColor = this.nowColor == 'b' ? 'w' : 'b'
-            }
+            console.log(r,c,'move',res.body)
+            this.waitMove()
           }
-
         })
-
+      },
+      waitMove() {
+        this.$http.get(this.urlPrefix+'gomoku/waitMove').then( res => {
+          if (res.body.bool) {
+            console.log('waitMove',res.body)
+            this.showMove(res.body.r, res.body.c)
+          }
+        })
+      },
+      showMove(r,c) {
+        this.chessmen[r][c].color = this.nowColor
+        this.nowColor = this.toggleColor(this.nowColor)
+        this.activeChess = [{r, c, color: this.nowColor}]
       },
       getColor() {
         this.$http.get(this.urlPrefix+'gomoku/getColor').then(res => {
