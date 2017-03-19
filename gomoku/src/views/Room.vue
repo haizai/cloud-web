@@ -201,7 +201,12 @@
         this.$http.post(this.urlPrefix+'gomoku/move',{r,c}).then( res => {
           if (res.body.bool) {
             console.log(r,c,'move',res.body)
-            this.waitMove()
+
+            if (res.body.text == 'continue') {
+              this.waitMove()
+            } else {
+              this.end(res.body)
+            }
           }
         })
       },
@@ -209,7 +214,12 @@
         this.$http.get(this.urlPrefix+'gomoku/waitMove').then( res => {
           if (res.body.bool) {
             console.log('waitMove',res.body)
-            this.showMove(res.body.r, res.body.c)
+            if (res.body.text == 'continue') {
+              this.showMove(res.body.r, res.body.c)
+            } else {
+              this.chessmen[res.body.r][res.body.c].color = this.nowColor
+              this.end(res.body)
+            }
           }
         })
       },
@@ -218,54 +228,14 @@
         this.nowColor = this.toggleColor(this.nowColor)
         this.activeChess = [{r, c, color: this.nowColor}]
       },
-      getColor() {
-        this.$http.get(this.urlPrefix+'gomoku/getColor').then(res => {
-
-          
-
-          if (res.body.bool == true) {
-
-            if (res.body.stage && res.body.stage == 'end') {
-              //一局结束
-              console.log('end', res.body)
-              let r = res.body.chess[0]
-              let c = res.body.chess[1]
-              this.chessmen[r][c].color = this.nowColor
-
-              let color = this.nowColor == 'b' ? 'w' : 'b'
-              this.activeChess = res.body.wingChess.map( chess => {
-                return {r: chess[0],c: chess[1],color}
-              });
-              this.wing = res.body.wing
-              this.stage = 'end'
-              this.$refs.audioEnd.play()
-              this.$forceUpdate()
-
-            } else {
-
-              console.log('wait',res.body)
-              if (res.body.text !== this.color) {
-                // 对方未落子
-                setTimeout(()=>{
-                  this.getColor()
-                },1000)
-              } else {
-                // 对方落子
-                if (res.body.chess) {
-                  let r = res.body.chess[0]
-                  let c = res.body.chess[1]
-                  this.chessmen[r][c].color = this.nowColor
-                  this.$refs.audioMove.play()
-                  this.activeChess = [{r,c,color: this.color}]
-                }
-                this.nowColor = res.body.text
-              }
-            }
-
-
-
-          }
+      end(obj) {
+        this.wing = obj.wing
+        this.activeChess = obj.wingChess.map( chess => {
+          console.info(obj.wing,this.toggleColor(obj.wing))
+          return {r: chess[0],c: chess[1],color: this.toggleColor(obj.wing)}
         })
+        this.stage = 'end'
+        this.$refs.audioEnd.play()
       }
     }
   }
