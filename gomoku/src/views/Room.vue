@@ -3,16 +3,19 @@
 <div class="container">
   <h1 @click="log()">room</h1>
 
-  <div class="person" style="top:100px" v-if="other !== null">
+  <div class="person" style="top:140px" v-if="other !== null">
     <img class="person-img" :src="'img/face/' + other.face.style + '/' + other.face.name + '.png'">
     <p class="person-account">{{other.account}}</p>
+    <div v-show="stage=='playing' && color!==nowColor" class="person-chess" :class="toggleColor(color)"></div>
+    <p class="person-p">比分：<span>{{otherScore}}</span></p>
   </div>
 
 
-  <div class="person" style="top:400px" v-if="me !== null">
+  <div class="person" style="top:420px" v-if="me !== null">
     <img class="person-img" :src="'img/face/' + me.face.style + '/' + me.face.name + '.png'">
     <p class="person-account">{{me.account}}</p>
-    <p class="person-color">{{color}}</p>
+    <div v-show="stage=='ready' || (stage=='playing' && color===nowColor)" class="person-chess" :class="color"></div>
+    <p class="person-p">比分：<span>{{meScore}}</span></p>
   </div>
 
 
@@ -27,13 +30,6 @@
         :style="{'margin-top': chess.r * 40 - 5 + 'px' ,'margin-left': chess.c * 40 - 5 + 'px'}">
       </span>
       <i class="icon-sound"></i>
-      <span
-        v-if="history.length > 0" 
-        class="activeChess" >
-      </span>
-      <span 
-        class="activeChess" >
-      </span>
       <Board/>
       <dt ref="dt">
         <dl v-for="r in 15">
@@ -48,7 +44,7 @@
     <ul class="btns">
       <li>悔棋</li>
       <li>认输</li>
-      <li @click="ready" :class="{active: ableRealy}">开始</li>
+      <li @click="ready" :class="{active: stage=='wait'|| stage=='end'}">开始</li>
       <li>和棋</li>
     </ul>
     <div style="display:none">   
@@ -76,21 +72,21 @@
     data() {
       return {
         me: null,
+        meScore: 0,
         other: null,
+        otherScore: 0,
         color: null,
         wing: null,
-        stage: 'wait', // wait playing end
+        stage: 'wait', // wait ready playing end
         wingChess:[],
-        history: [],
         backgroundAudio: true,
-        tip: '请按开始',
-        ableRealy: true,
         nowColor:'b',
         activeChess: [{
           r: null,
           c: null,
           color: null
         }],
+        history:[]
       }
     },
     computed:{
@@ -98,46 +94,46 @@
         return process.env.NODE_ENV === 'production' ? '/ajax/' : 'http://localhost/ajax/'
       },
       tipComputed() {
-        let meColor = this.color == 'b' ? '黑' : '白'
-        let after = ''
-        if (this.stage == 'wait') {
+        // let meColor = this.color == 'b' ? '黑' : '白'
 
-          after = this.tip
-          return '执' + meColor + ' ' + after
-
-        } else if (this.stage == 'playing') {
-
-          after = this.color == this.nowColor ? '请落子' : '等待对方落子'
-          return '执' + meColor + ' ' + after
-
-        } else if (this.stage == 'end') {
-
-          if (this.wing == this.color) {
-            return '你贏了'
-          } else if (this.wing == 'draw_225') {
-            return '棋子落满，和棋'
-          } else {
-            return '你输了'
-          }
-        }
-        
+        switch (this.stage) {
+          case 'wait':
+            return '请按开始'
+          case 'ready':
+            return '等待对方开始'
+          case 'playing':
+            return this.color == this.nowColor ? '请落子' : '等待对方落子'
+          case 'end':
+            if (this.wing == this.color) {
+              return '你贏了'
+            } else if (this.wing == 'draw_225') {
+              return '棋子落满，和棋'
+            } else {
+              return '你输了'
+            }
+          default: 
+            return 'unknown'
+        }        
       },
     },
     created(){
       this.checkGomoku()
-      let obj = {}, r = 1, c = 1
-      for (let r = 1; r <= 15; r++) {
-        obj[r] = {}
-        for (let c = 1; c <= 15; c++) {
-          obj[r][c] = {
-            color: null,
-            wing: null
-          }
-        }
-      }
-      this.chessmen = obj
+      this.resetChess()
     },
     methods: {
+      resetChess() {
+        let obj = {}, r = 1, c = 1
+        for (let r = 1; r <= 15; r++) {
+          obj[r] = {}
+          for (let c = 1; c <= 15; c++) {
+            obj[r][c] = {
+              color: null,
+              wing: null
+            }
+          }
+        }
+        this.chessmen = obj
+      },
       log(){
         console.log(this)
       },
@@ -161,13 +157,25 @@
         })
       },
       ready() {
-        this.$refs.audioClick.play()
-        this.ableRealy = false
-        this.$http.get(this.urlPrefix+'gomoku/ready').then(res => {
-          if (res.body.bool) {
-            this.start()
+        if (this.stage == 'wait' || this.stage == 'end') {
+
+          if (this.stage == 'end') {
+            this.color = this.toggleColor(this.color)
+            this.wing = null,
+            this.activeChess = [{r: null,c: null,color: null}]
+            this.nowColor = 'b'
+            this.resetChess()
           }
-        })
+          this.$refs.audioClick.play()
+          this.stage = 'ready'
+          
+          this.$forceUpdate()
+          this.$http.get(this.urlPrefix+'gomoku/ready').then(res => {
+            if (res.body.bool) {
+              this.start()
+            }
+          })
+        }
       },
       start() {
         this.$refs.audioStart.play()
@@ -230,9 +238,11 @@
       },
       end(obj) {
         this.wing = obj.wing
+        this.meScore = obj.score[this.me.account]
+        this.otherScore = obj.score[this.other.account]
         this.activeChess = obj.wingChess.map( chess => {
-          console.info(obj.wing,this.toggleColor(obj.wing))
-          return {r: chess[0],c: chess[1],color: this.toggleColor(obj.wing)}
+          let color = this.toggleColor(obj.wing)
+          return {r: chess[0],c: chess[1],color}
         })
         this.stage = 'end'
         this.$refs.audioEnd.play()

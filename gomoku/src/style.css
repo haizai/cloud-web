@@ -42,7 +42,7 @@ dl {
 dt {
   height: 40px;
 }
-dd {
+dd, .person-chess {
   display: inline-block;
   float: left;
   width: 38px;
@@ -52,12 +52,12 @@ dd {
   border-radius: 50%;
   font-size: 12px;
 }
-dd.w {
+dd.w, .person-chess.w {
   border-color: #333;
   background-color: #fff;
   cursor: default;
 }
-dd.b {
+dd.b, .person-chess.b {
   border-color: #333;
   background-color: #333;
   cursor: default;
@@ -138,4 +138,12 @@ i {
   font-size: 16px;
   font-weight: bold;
   text-align: center;
+}
+.person-p {
+  padding-left: 50px;
+  font-size: 16px;
+  line-height: 36px;
+}
+.person-chess {
+  position: absolute;
 }
