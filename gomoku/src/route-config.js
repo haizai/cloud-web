@@ -17,7 +17,7 @@ export default [
     },
     {
       name: 'room',
-      path: '/online/room',
+      path: '/online/room/:num',
       component: Room
     },
     {

@@ -7,7 +7,7 @@
     <img class="person-img" :src="'img/face/' + other.face.style + '/' + other.face.name + '.png'">
     <p class="person-account">{{other.account}}</p>
     <div v-show="stage=='playing' && color!==nowColor" class="person-chess" :class="toggleColor(color)"></div>
-    <p class="person-p">比分：<span>{{otherScore}}</span></p>
+    <p class="person-p">本局比分：<span>{{otherScore}}</span></p>
   </div>
 
 
@@ -15,7 +15,7 @@
     <img class="person-img" :src="'img/face/' + me.face.style + '/' + me.face.name + '.png'">
     <p class="person-account">{{me.account}}</p>
     <div v-show="stage=='ready' || (stage=='playing' && color===nowColor)" class="person-chess" :class="color"></div>
-    <p class="person-p">比分：<span>{{meScore}}</span></p>
+    <p class="person-p">本局比分：<span>{{meScore}}</span></p>
   </div>
 
 
@@ -55,7 +55,7 @@
 <!--       <audio src="audio/background.mp3" preload="auto" ref="audioBackground"></audio> -->
     </div>
   </div>
-
+  <span @click="checkGomoku">checkGomoku</span>
 </div>
 
 </template>
@@ -64,8 +64,10 @@
 
   import Board from '../components/Board.vue'
 
+
   export default {
-    name: 'outline',
+    name: 'room',
+    props:['socket'],
     components: {
       Board
     },
@@ -91,7 +93,7 @@
     },
     computed:{
       urlPrefix () {
-        return process.env.NODE_ENV === 'production' ? '/ajax/' : 'http://localhost/ajax/'
+        return process.env.NODE_ENV === 'production' ? '/' : 'http://localhost/'
       },
       tipComputed() {
         // let meColor = this.color == 'b' ? '黑' : '白'
@@ -117,6 +119,7 @@
       },
     },
     created(){
+      this.num = this.$route.params.num
       this.checkGomoku()
       this.resetChess()
     },
@@ -145,16 +148,18 @@
         }
       },
       checkGomoku() {
-        this.$http.get(this.urlPrefix+'gomoku/checkGomoku').then(res => {
-          if (res.body.text == 'in gomoku') {
-            console.log(res.body)
-            this.me = res.body.me
-            this.other = res.body.other
-            this.color = res.body.color
-          } else {
-            this.$router.push({name: 'online'})
-          }
+
+
+        this.socket.on('error', o=> {
+          console.log('error',o)
         })
+
+        this.socket.emit('checkGomoku')
+
+        this.socket.on('user', o=> {
+          console.log('user',o)
+        })
+
       },
       ready() {
         if (this.stage == 'wait' || this.stage == 'end') {
@@ -223,6 +228,7 @@
           if (res.body.bool) {
             console.log('waitMove',res.body)
             if (res.body.text == 'continue') {
+              this.$refs.audioMove.play()
               this.showMove(res.body.r, res.body.c)
             } else {
               this.chessmen[res.body.r][res.body.c].color = this.nowColor

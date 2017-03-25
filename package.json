@@ -9,14 +9,11 @@
     "animes-dev": "cd animes && cross-env NODE_ENV=dev webpack-dev-server --inline --hot",
     "animes-build": "cd animes && cross-env NODE_ENV=production webpack --progress --hide-modules",
     "animes-move": "cross-env name=animes node move",
-
     "m-animes-dev": "cd m-animes && cross-env NODE_ENV=dev webpack-dev-server --inline --hot",
     "m-animes-build": "cd m-animes && cross-env NODE_ENV=production webpack --progress --hide-modules",
-
     "user-dev": "cd user && cross-env NODE_ENV=dev webpack-dev-server --inline --hot",
     "user-build": "cd user && cross-env NODE_ENV=production webpack --progress --hide-modules",
     "user-move": "cross-env name=user node move",
-
     "gomoku-dev": "cd gomoku && cross-env NODE_ENV=dev webpack-dev-server --inline --hot --port 8081",
     "gomoku-build": "cd gomoku && cross-env NODE_ENV=production webpack --progress --hide-modules",
     "gomoku-move": "cross-env name=gomoku node move"
@@ -32,6 +29,7 @@
     "css-loader": "^0.25.0",
     "html-loader": "^0.4.4",
     "postcss-loader": "^1.1.1",
+    "socket.io-client": "^1.7.3",
     "style-loader": "^0.13.1",
     "url-loader": "^0.5.7",
     "vue": "^2.0.3",

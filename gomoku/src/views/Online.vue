@@ -3,21 +3,33 @@
   <h1>online</h1>
   <button @click="checkLogin()">checkLogin</button>
   <button @click="getUserInCenter()">getUserInCenter</button>
-  <button @click="enterRoom()">enterRoom</button>
+  <button @click="tryEnterRoom()">tryEnterRoom</button>
 
 </div>
 </template>
 
 <script>
+
   export default {
     computed:{
       urlPrefix () {
-        return process.env.NODE_ENV === 'production' ? '/ajax/' : 'http://localhost/ajax/'
+        return process.env.NODE_ENV === 'production' ? '/' : 'http://localhost/'
       },
+    },
+    props:['socket'],
+    created() {
+
+      this.socket.on('err', obj=>{
+        console.error(obj)
+      })
+
+      this.socket.on('roomEnter', num=>{
+        this.$router.push({name: 'room', params:{num}})
+      })
     },
     methods: {
       checkLogin() {
-        this.$http.get(this.urlPrefix+'user/checkLogin').then(res => {
+        this.$http.get(this.urlPrefix+'ajax/user/checkLogin').then(res => {
           if (res.body.state == 2001) {
             console.error('请先登录')
           } else {
@@ -26,7 +38,7 @@
         })
       },
       getUserInCenter() {
-        this.$http.get(this.urlPrefix+'user/getUserInCenter').then(res => {
+        this.$http.get(this.urlPrefix+'ajax/user/getUserInCenter').then(res => {
           if (res.body.state == 1) {
             console.log(res.body)
           } else {
@@ -34,13 +46,8 @@
           }
         })
       },
-      enterRoom() {
-        this.$http.get(this.urlPrefix+'gomoku/roomEnter',{params:{num:1}}).then(res => {
-          console.log(res.body)
-          if (res.body.bool) {
-            this.$router.push({name:'room'})
-          }
-        })
+      tryEnterRoom() {
+        this.socket.emit('tryRoomEnter',100)
       },
     }
   }
