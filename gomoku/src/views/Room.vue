@@ -3,15 +3,15 @@
 <div class="container">
   <h1 @click="log()">room</h1>
 
-  <div class="person" style="top:140px" v-if="other !== null">
+  <div class="person" style="top:140px" v-if="other.ready !== null">
     <img class="person-img" :src="'img/face/' + other.face.style + '/' + other.face.name + '.png'">
     <p class="person-account">{{other.account}}</p>
-    <div v-show="(stage=='wait' && other.ready) || (stage=='playing' && color!==nowColor)" class="person-chess" :class="toggleColor(color)"></div>
+    <div v-show="((stage=='wait' || stage=='end') && other.ready) || (stage=='playing' && color!==nowColor)" class="person-chess" :class="toggleColor(color)"></div>
     <p class="person-p">本局比分：<span>{{otherScore}}</span></p>
   </div>
 
 
-  <div class="person" style="top:420px" v-if="me !== null">
+  <div class="person" style="top:420px" v-if="me.ready!== null">
     <img class="person-img" :src="'img/face/' + me.face.style + '/' + me.face.name + '.png'">
     <p class="person-account">{{me.account}}</p>
     <div v-show=" (stage=='wait' && me.ready) || (stage=='playing' && color===nowColor)" class="person-chess" :class="color"></div>
@@ -44,7 +44,7 @@
     <ul class="btns">
       <li>悔棋</li>
       <li>认输</li>
-      <li @click="ready" :class="{active: stage=='wait'|| stage=='end'}">开始</li>
+      <li @click="ready" :class="{active: (stage=='wait' && !me.ready)|| stage=='end'}">开始</li>
       <li>和棋</li>
     </ul>
     <div style="display:none">   
@@ -72,9 +72,13 @@
     },
     data() {
       return {
-        me: null,
+        me: {
+          ready: null
+        },
         meScore: 0,
-        other: null,
+        other: {
+          ready: null
+        },
         otherScore: 0,
         color: null,
         wing: null,
@@ -145,6 +149,15 @@
         }
         this.chessmen = obj
       },
+      reset() {
+        this.wing = null,
+        this.activeChess = [{r: null,c: null,color: null}]
+        this.nowColor = 'b'
+        this.stage = 'wait'
+        this.me.ready = false
+        this.other.ready = false
+        this.resetChess()
+      },
       log(){
         console.log(this)
       },
@@ -174,8 +187,8 @@
         })
 
         this.socket.on('otherReady', ()=> {
-          console.log('otherReady')
           this.other.ready = true
+          this.$refs.audioClick.play()
         })
 
         this.socket.on('allReady', ()=> {
@@ -187,22 +200,31 @@
           this.$refs.audioMove.play()
           this.showMove(o.r, o.c)
         })
+
+        this.socket.on('end', o=> {
+          console.log('end',o)
+          this.stage = 'end'
+          this.$refs.audioEnd.play()
+          this.wing = o.wing
+          if (o.r) {
+            this.chessmen[o.r][o.c].color = this.wing
+          }
+          this.meScore = o.score[this.me.account]
+          this.otherScore = o.score[this.other.account]
+          this.activeChess = o.wingChess.map( chess => {
+            let color = this.toggleColor(o.wing)
+            return {r: chess[0],c: chess[1],color}
+          })
+        })
       },
       ready() {
         if ((this.stage == 'wait' && !this.me.ready) || this.stage == 'end') {
 
           if (this.stage == 'end') {
-            this.color = this.toggleColor(this.color)
-            this.wing = null,
-            this.activeChess = [{r: null,c: null,color: null}]
-            this.nowColor = 'b'
-            this.resetChess()
+            this.reset()
           }
-
           this.$refs.audioClick.play()
           this.me.ready = true
-          
-          this.$forceUpdate()
 
           this.socket.emit('ready')
         }
