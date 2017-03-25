@@ -6,7 +6,7 @@
   <div class="person" style="top:140px" v-if="other !== null">
     <img class="person-img" :src="'img/face/' + other.face.style + '/' + other.face.name + '.png'">
     <p class="person-account">{{other.account}}</p>
-    <div v-show="stage=='playing' && color!==nowColor" class="person-chess" :class="toggleColor(color)"></div>
+    <div v-show="(stage=='wait' && other.ready) || color!==nowColor" class="person-chess" :class="toggleColor(color)"></div>
     <p class="person-p">本局比分：<span>{{otherScore}}</span></p>
   </div>
 
@@ -14,7 +14,7 @@
   <div class="person" style="top:420px" v-if="me !== null">
     <img class="person-img" :src="'img/face/' + me.face.style + '/' + me.face.name + '.png'">
     <p class="person-account">{{me.account}}</p>
-    <div v-show="stage=='ready' || (stage=='playing' && color===nowColor)" class="person-chess" :class="color"></div>
+    <div v-show=" stage=='ready' || (stage=='playing' && color===nowColor)" class="person-chess" :class="color"></div>
     <p class="person-p">本局比分：<span>{{meScore}}</span></p>
   </div>
 
@@ -55,7 +55,6 @@
 <!--       <audio src="audio/background.mp3" preload="auto" ref="audioBackground"></audio> -->
     </div>
   </div>
-  <span @click="checkGomoku">checkGomoku</span>
 </div>
 
 </template>
@@ -79,7 +78,7 @@
         otherScore: 0,
         color: null,
         wing: null,
-        stage: 'wait', // wait ready playing end
+        stage: 'wait', // wait (ready) playing end
         wingChess:[],
         backgroundAudio: true,
         nowColor:'b',
@@ -120,7 +119,8 @@
     },
     created(){
       this.num = this.$route.params.num
-      this.checkGomoku()
+      this.socket.emit('checkGomoku')
+      this.socketListener()
       this.resetChess()
     },
     methods: {
@@ -147,17 +147,29 @@
           return 'b'
         }
       },
-      checkGomoku() {
+      socketListener() {
 
 
         this.socket.on('error', o=> {
           console.log('error',o)
         })
 
-        this.socket.emit('checkGomoku')
 
         this.socket.on('user', o=> {
           console.log('user',o)
+          this.color = o.color
+          this.me = o.me
+          this.other = o.other
+        })
+
+        this.socket.on('otherReady', ()=> {
+          console.log('otherReady')
+          this.other.ready = true
+        })
+
+        this.socket.on('allReady', ()=> {
+
+          this.start()
         })
 
       },
@@ -171,24 +183,22 @@
             this.nowColor = 'b'
             this.resetChess()
           }
+
           this.$refs.audioClick.play()
           this.stage = 'ready'
+          this.me.ready = true
           
           this.$forceUpdate()
-          this.$http.get(this.urlPrefix+'gomoku/ready').then(res => {
-            if (res.body.bool) {
-              this.start()
-            }
-          })
+
+          this.socket.emit('ready')
+
         }
       },
       start() {
         this.$refs.audioStart.play()
         this.stage = 'playing'
         this.nowColor = 'b'
-        if (this.color == 'w') {
-          this.waitMove()
-        }
+
       },
       move(r,c) {
 
