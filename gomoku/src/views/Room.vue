@@ -6,7 +6,7 @@
   <div class="person" style="top:140px" v-if="other !== null">
     <img class="person-img" :src="'img/face/' + other.face.style + '/' + other.face.name + '.png'">
     <p class="person-account">{{other.account}}</p>
-    <div v-show="(stage=='wait' && other.ready) || color!==nowColor" class="person-chess" :class="toggleColor(color)"></div>
+    <div v-show="(stage=='wait' && other.ready) || (stage=='playing' && color!==nowColor)" class="person-chess" :class="toggleColor(color)"></div>
     <p class="person-p">本局比分：<span>{{otherScore}}</span></p>
   </div>
 
@@ -14,7 +14,7 @@
   <div class="person" style="top:420px" v-if="me !== null">
     <img class="person-img" :src="'img/face/' + me.face.style + '/' + me.face.name + '.png'">
     <p class="person-account">{{me.account}}</p>
-    <div v-show=" stage=='ready' || (stage=='playing' && color===nowColor)" class="person-chess" :class="color"></div>
+    <div v-show=" (stage=='wait' && me.ready) || (stage=='playing' && color===nowColor)" class="person-chess" :class="color"></div>
     <p class="person-p">本局比分：<span>{{meScore}}</span></p>
   </div>
 
@@ -78,7 +78,7 @@
         otherScore: 0,
         color: null,
         wing: null,
-        stage: 'wait', // wait (ready) playing end
+        stage: 'wait', // wait playing end
         wingChess:[],
         backgroundAudio: true,
         nowColor:'b',
@@ -99,9 +99,17 @@
 
         switch (this.stage) {
           case 'wait':
-            return '请按开始'
-          case 'ready':
-            return '等待对方开始'
+
+            if (this.me) {
+              if (!this.me.ready) {
+                return '请按开始'
+              } else {
+                return '请等待对方开始'
+              }
+            } else {
+              return 'loading...'
+            }
+
           case 'playing':
             return this.color == this.nowColor ? '请落子' : '等待对方落子'
           case 'end':
@@ -150,8 +158,11 @@
       socketListener() {
 
 
-        this.socket.on('error', o=> {
-          console.log('error',o)
+        this.socket.on('err', o=> {
+          console.log('err',o)
+          if (o.text == 'not login' || o.text == 'not enter room') {
+            this.$router.push({name: 'online'})
+          }
         })
 
 
@@ -168,13 +179,17 @@
         })
 
         this.socket.on('allReady', ()=> {
-
           this.start()
         })
 
+        this.socket.on('otherMove', o=> {
+          console.log('otherMove',o)
+          this.$refs.audioMove.play()
+          this.showMove(o.r, o.c)
+        })
       },
       ready() {
-        if (this.stage == 'wait' || this.stage == 'end') {
+        if ((this.stage == 'wait' && !this.me.ready) || this.stage == 'end') {
 
           if (this.stage == 'end') {
             this.color = this.toggleColor(this.color)
@@ -185,20 +200,17 @@
           }
 
           this.$refs.audioClick.play()
-          this.stage = 'ready'
           this.me.ready = true
           
           this.$forceUpdate()
 
           this.socket.emit('ready')
-
         }
       },
       start() {
         this.$refs.audioStart.play()
         this.stage = 'playing'
         this.nowColor = 'b'
-
       },
       move(r,c) {
 
@@ -221,17 +233,9 @@
         this.$refs.audioMove.play()
         
         this.showMove(r,c)
-        this.$http.post(this.urlPrefix+'gomoku/move',{r,c}).then( res => {
-          if (res.body.bool) {
-            console.log(r,c,'move',res.body)
 
-            if (res.body.text == 'continue') {
-              this.waitMove()
-            } else {
-              this.end(res.body)
-            }
-          }
-        })
+        this.socket.emit('move', {r,c})
+
       },
       waitMove() {
         this.$http.get(this.urlPrefix+'gomoku/waitMove').then( res => {
