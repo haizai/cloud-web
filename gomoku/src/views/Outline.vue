@@ -271,7 +271,7 @@
           this.$refs.audioEnd.play()
           this.$forceUpdate()
         }
-      }
+      },
     }
   }
 </script>

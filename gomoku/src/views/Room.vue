@@ -43,7 +43,7 @@
     </div>
     <ul class="btns">
       <li>悔棋</li>
-      <li>认输</li>
+      <li @click="givein" :class="{active: stage=='playing'}">认输</li>
       <li @click="ready" :class="{active: (stage=='wait' && !me.ready)|| stage=='end'}">开始</li>
       <li>和棋</li>
     </ul>
@@ -117,12 +117,17 @@
           case 'playing':
             return this.color == this.nowColor ? '请落子' : '等待对方落子'
           case 'end':
-            if (this.wing == this.color) {
-              return '你贏了'
-            } else if (this.wing == 'draw_225') {
-              return '棋子落满，和棋'
-            } else {
-              return '你输了'
+            switch (this.wing) {
+              case this.color: 
+                return '你贏了'
+              case 'draw_225': 
+                return '棋子落满，和棋'
+              case 'meGivein': 
+                return '你投子认负'
+              case 'otherGivein': 
+                return '对方投子认负'
+              default: 
+                return '你贏了'
             }
           default: 
             return 'unknown'
@@ -149,13 +154,17 @@
         }
         this.chessmen = obj
       },
+      end() {
+        this.stage = 'end'
+        this.tryAudioPlay(this.$refs.audioEnd)
+        this.me.ready = false
+        this.other.ready = false
+      },
       reset() {
         this.wing = null,
         this.activeChess = [{r: null,c: null,color: null}]
         this.nowColor = 'b'
         this.stage = 'wait'
-        this.me.ready = false
-        this.other.ready = false
         this.resetChess()
       },
       log(){
@@ -188,7 +197,7 @@
 
         this.socket.on('otherReady', ()=> {
           this.other.ready = true
-          this.$refs.audioClick.play()
+          this.tryAudioPlay(this.$refs.audioClick)
         })
 
         this.socket.on('allReady', ()=> {
@@ -197,14 +206,18 @@
 
         this.socket.on('otherMove', o=> {
           console.log('otherMove',o)
-          this.$refs.audioMove.play()
+          this.tryAudioPlay(this.$refs.audioMove)
           this.showMove(o.r, o.c)
         })
 
+        this.socket.on('otherGivein', o=> {
+          this.end()
+          this.meScore++
+          this.wing = 'otherGivein'
+        })
+        
         this.socket.on('end', o=> {
-          console.log('end',o)
-          this.stage = 'end'
-          this.$refs.audioEnd.play()
+          this.end()
           this.wing = o.wing
           if (o.r) {
             this.chessmen[o.r][o.c].color = this.wing
@@ -223,14 +236,14 @@
           if (this.stage == 'end') {
             this.reset()
           }
-          this.$refs.audioClick.play()
+          this.tryAudioPlay(this.$refs.audioClick)
           this.me.ready = true
 
           this.socket.emit('ready')
         }
       },
       start() {
-        this.$refs.audioStart.play()
+        this.tryAudioPlay(this.$refs.audioStart)
         this.stage = 'playing'
         this.nowColor = 'b'
       },
@@ -252,42 +265,31 @@
         }
         this.chessmen[r][c].color = this.color
 
-        this.$refs.audioMove.play()
+        this.tryAudioPlay(this.$refs.audioMove)
         
         this.showMove(r,c)
 
         this.socket.emit('move', {r,c})
 
       },
-      waitMove() {
-        this.$http.get(this.urlPrefix+'gomoku/waitMove').then( res => {
-          if (res.body.bool) {
-            console.log('waitMove',res.body)
-            if (res.body.text == 'continue') {
-              this.$refs.audioMove.play()
-              this.showMove(res.body.r, res.body.c)
-            } else {
-              this.chessmen[res.body.r][res.body.c].color = this.nowColor
-              this.end(res.body)
-            }
-          }
-        })
-      },
       showMove(r,c) {
         this.chessmen[r][c].color = this.nowColor
         this.nowColor = this.toggleColor(this.nowColor)
         this.activeChess = [{r, c, color: this.nowColor}]
       },
-      end(obj) {
-        this.wing = obj.wing
-        this.meScore = obj.score[this.me.account]
-        this.otherScore = obj.score[this.other.account]
-        this.activeChess = obj.wingChess.map( chess => {
-          let color = this.toggleColor(obj.wing)
-          return {r: chess[0],c: chess[1],color}
-        })
-        this.stage = 'end'
-        this.$refs.audioEnd.play()
+      givein() {
+        this.socket.emit('givein')
+        this.otherScore++
+        this.wing = 'meGivein'
+        this.end()
+      },
+      //防止未知原因play()报错
+      tryAudioPlay(audio) {
+        try {
+          audio.play()
+        } catch(e) {
+          console.log('error tryAudioPlay',e);
+        }
       }
     }
   }
