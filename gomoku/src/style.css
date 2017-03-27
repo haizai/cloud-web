@@ -147,3 +147,60 @@ i {
 .person-chess {
   position: absolute;
 }
+
+
+.popup {
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+  top: 0;
+  left: 0;
+  position: fixed;
+  background: rgba(0, 0, 0, .3)
+}
+.popup-cont {
+  width: 400px;
+  background: #fff;
+  padding: 20px;
+  margin: 150px auto;
+  border-radius: 5px;
+  box-shadow: 2px 2px 5px 1px #777;
+}
+.popup-text {
+  text-align: center;
+  font-size: 16px;
+}
+.popup-bottom {
+  margin-top: 40px;
+}
+.popup-btn {
+  display: inline-block;
+  height: 40px;
+  line-height: 40px;
+  padding: 0px 40px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  transition: all .3s;
+}
+.popup-btn.confirm {
+  margin-left: 46px;
+  margin-right: 40px;
+  background-color: rgba(45, 149, 183, .8);
+  border-color: rgba(45, 149, 183, .8);
+  color: #eee;
+}
+.popup-btn.confirm:hover {
+  background-color: rgba(45, 149, 183,1);
+  color: #fff;
+}
+.popup-btn.cancel {
+  margin-right: 46px;
+  margin-left: 40px;
+  color: #888;
+}
+.popup-btn.cancel:hover {
+  color: #000;
+  border-color: #555;
+}

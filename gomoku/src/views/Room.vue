@@ -54,6 +54,7 @@
       <audio src="audio/start.mp3" preload="auto" ref="audioStart"></audio>
 <!--       <audio src="audio/background.mp3" preload="auto" ref="audioBackground"></audio> -->
     </div>
+    <Popup ref="popup"></Popup>
   </div>
 </div>
 
@@ -62,14 +63,13 @@
 <script>
 
   import Board from '../components/Board.vue'
+  import Popup from '../components/Popup.vue'
 
 
   export default {
     name: 'room',
     props:['socket'],
-    components: {
-      Board
-    },
+    components: { Board, Popup },
     data() {
       return {
         me: {
@@ -278,10 +278,15 @@
         this.activeChess = [{r, c, color: this.nowColor}]
       },
       givein() {
-        this.socket.emit('givein')
-        this.otherScore++
-        this.wing = 'meGivein'
-        this.end()
+        if (this.stage =='playing') {
+          this.tryAudioPlay(this.$refs.audioClick)
+          this.$refs.popup.$emit('popup', '你确定要认输吗？', () => {
+            this.socket.emit('givein')
+            this.otherScore++
+            this.wing = 'meGivein'
+            this.end()
+          })
+        }
       },
       //防止未知原因play()报错
       tryAudioPlay(audio) {
