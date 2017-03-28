@@ -45,7 +45,7 @@
       <li>悔棋</li>
       <li @click="givein" :class="{active: stage=='playing'}">认输</li>
       <li @click="ready" :class="{active: (stage=='wait' && !me.ready)|| stage=='end'}">开始</li>
-      <li>和棋</li>
+      <li @click="tryDraw" :class="{active: stage=='playing'}">求和</li>
     </ul>
     <div style="display:none">   
       <audio src="audio/chess_move.mp3" preload="auto" ref="audioMove"></audio>
@@ -122,6 +122,8 @@
                 return '你贏了'
               case 'draw_225': 
                 return '棋子落满，和棋'
+              case 'draw': 
+                return '双方和棋'
               case 'meGivein': 
                 return '你投子认负'
               case 'otherGivein': 
@@ -170,6 +172,14 @@
       log(){
         console.log(this)
       },
+      //防止未知原因play()报错
+      tryAudioPlay(audio) {
+        try {
+          audio.play()
+        } catch(e) {
+          console.log('error tryAudioPlay',e);
+        }
+      },
       toggleColor(color) {
         if (color == 'b') {
           return 'w'
@@ -211,13 +221,60 @@
         })
 
         this.socket.on('otherGivein', o=> {
-          this.$refs.popup.$emit('alert', '对方投子认负，你赢了！', () => {
-          this.meScore++
-          this.wing = 'otherGivein'
-          this.end()
+          this.tryAudioPlay(this.$refs.audioClick)
+          this.$refs.popup.$emit('popup', {
+            type: 'alert',
+            text: '对方投子认负，你赢了！',
+            confirm: () => {
+              this.meScore++
+              this.wing = 'otherGivein'
+              this.end()
+            }
           })
         })
-        
+
+        this.socket.on('otherTryDraw', o=> {
+          this.tryAudioPlay(this.$refs.audioClick)
+          this.$refs.popup.$emit('popup', {
+            type: 'confirm',
+            text: '对方求和！是否同意',
+            confirmText: '同意',
+            cancelText: '拒绝',
+            confirm: () => {
+              this.socket.emit('agreeDraw')
+              this.wing = 'draw'
+              this.end()
+            },
+            cancel: () => {
+              this.socket.emit('refuseDraw')
+              this.tryAudioPlay(this.$refs.audioClick)
+            }
+          })
+        })
+
+        this.socket.on('otherAgreeDraw', o=> {
+          this.tryAudioPlay(this.$refs.audioClick)
+          this.$refs.popup.$emit('popup', {
+            type: 'alert',
+            text: '对方同意你的求和。',
+            confirm: () => {
+              this.wing = 'draw'
+              this.end()
+            },
+          })
+        })
+
+        this.socket.on('otherRefuseDraw', o=> {
+          this.tryAudioPlay(this.$refs.audioClick)
+          this.$refs.popup.$emit('popup', {
+            type: 'alert',
+            text: '对方拒绝你的求和。',
+            confirm: ()=>{
+              this.tryAudioPlay(this.$refs.audioClick)
+            }
+          })
+        })
+
         this.socket.on('end', o=> {
           this.end()
           this.wing = o.wing
@@ -282,22 +339,38 @@
       givein() {
         if (this.stage =='playing') {
           this.tryAudioPlay(this.$refs.audioClick)
-          this.$refs.popup.$emit('confirm', '你确定要认输吗？', () => {
-            this.socket.emit('givein')
-            this.otherScore++
-            this.wing = 'meGivein'
-            this.end()
+          this.$refs.popup.$emit('popup', {
+            type: 'confirm',
+            text: '你确定要认输吗？',
+            confirm: () => {
+              this.socket.emit('givein')
+              this.otherScore++
+              this.wing = 'meGivein'
+              this.end()
+            },
+            cancel: () => {
+              this.tryAudioPlay(this.$refs.audioClick)
+            }
           })
         }
       },
-      //防止未知原因play()报错
-      tryAudioPlay(audio) {
-        try {
-          audio.play()
-        } catch(e) {
-          console.log('error tryAudioPlay',e);
+      tryDraw() {
+        if (this.stage =='playing') {
+          this.tryAudioPlay(this.$refs.audioClick)
+          this.$refs.popup.$emit('popup', {
+            type: 'confirm',
+            text: '你确定要求和吗？',
+            confirm: () => {
+              this.socket.emit('tryDraw')
+              this.tryAudioPlay(this.$refs.audioClick)
+            },
+            cancel: () => {
+              this.tryAudioPlay(this.$refs.audioClick)
+            }
+          })
         }
       }
+
     }
   }
 </script>
