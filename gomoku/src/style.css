@@ -171,7 +171,7 @@ i {
   font-size: 16px;
 }
 .popup-bottom {
-  margin-top: 40px;
+  margin-top: 50px;
 }
 .popup-btn {
   display: inline-block;
@@ -184,16 +184,21 @@ i {
   border: 1px solid #ccc;
   transition: all .3s;
 }
-.popup-btn.confirm {
-  margin-left: 46px;
-  margin-right: 40px;
+.popup-btn.confirm, .popup-btn.alert {
   background-color: rgba(45, 149, 183, .8);
   border-color: rgba(45, 149, 183, .8);
   color: #eee;
 }
-.popup-btn.confirm:hover {
+.popup-btn.confirm:hover, .popup-btn.alert:hover {
   background-color: rgba(45, 149, 183,1);
   color: #fff;
+}
+.popup-btn.alert {
+  margin-left: 143px;
+}
+.popup-btn.confirm {
+  margin-left: 46px;
+  margin-right: 40px;
 }
 .popup-btn.cancel {
   margin-right: 46px;

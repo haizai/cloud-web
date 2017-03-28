@@ -211,9 +211,11 @@
         })
 
         this.socket.on('otherGivein', o=> {
-          this.end()
+          this.$refs.popup.$emit('alert', '对方投子认负，你赢了！', () => {
           this.meScore++
           this.wing = 'otherGivein'
+          this.end()
+          })
         })
         
         this.socket.on('end', o=> {
@@ -280,7 +282,7 @@
       givein() {
         if (this.stage =='playing') {
           this.tryAudioPlay(this.$refs.audioClick)
-          this.$refs.popup.$emit('popup', '你确定要认输吗？', () => {
+          this.$refs.popup.$emit('confirm', '你确定要认输吗？', () => {
             this.socket.emit('givein')
             this.otherScore++
             this.wing = 'meGivein'
