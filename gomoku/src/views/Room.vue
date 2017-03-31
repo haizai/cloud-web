@@ -1,6 +1,7 @@
 <template>
   
 <div class="container">
+  <Popup ref="popup"></Popup>
   <h1 @click="log()">room</h1>
 
   <div class="person" style="top:140px" v-if="other.ready !== null">
@@ -42,7 +43,7 @@
       </dt>
     </div>
     <ul class="btns">
-      <li>悔棋</li>
+      <li @click="tryRegret" :class="{active: stage=='playing' && history.length > 2}">悔棋</li>
       <li @click="givein" :class="{active: stage=='playing'}">认输</li>
       <li @click="ready" :class="{active: (stage=='wait' && !me.ready)|| stage=='end'}">开始</li>
       <li @click="tryDraw" :class="{active: stage=='playing'}">求和</li>
@@ -54,7 +55,7 @@
       <audio src="audio/start.mp3" preload="auto" ref="audioStart"></audio>
 <!--       <audio src="audio/background.mp3" preload="auto" ref="audioBackground"></audio> -->
     </div>
-    <Popup ref="popup"></Popup>
+  
   </div>
 </div>
 
@@ -80,12 +81,12 @@
           ready: null
         },
         otherScore: 0,
-        color: null,
+        color: null, // 自己的颜色
         wing: null,
         stage: 'wait', // wait playing end
         wingChess:[],
         backgroundAudio: true,
-        nowColor:'b',
+        nowColor:'b', //后台为color
         activeChess: [{
           r: null,
           c: null,
@@ -167,6 +168,7 @@
         this.activeChess = [{r: null,c: null,color: null}]
         this.nowColor = 'b'
         this.stage = 'wait'
+        this.history = []
         this.resetChess()
       },
       log(){
@@ -220,7 +222,7 @@
           this.showMove(o.r, o.c)
         })
 
-        this.socket.on('otherGivein', o=> {
+        this.socket.on('otherGivein', ()=> {
           this.tryAudioPlay(this.$refs.audioClick)
           this.$refs.popup.$emit('popup', {
             type: 'alert',
@@ -233,11 +235,11 @@
           })
         })
 
-        this.socket.on('otherTryDraw', o=> {
+        this.socket.on('otherTryDraw', ()=> {
           this.tryAudioPlay(this.$refs.audioClick)
           this.$refs.popup.$emit('popup', {
             type: 'confirm',
-            text: '对方求和！是否同意',
+            text: '对方求和，是否同意？',
             confirmText: '同意',
             cancelText: '拒绝',
             confirm: () => {
@@ -252,14 +254,43 @@
           })
         })
 
-        this.socket.on('otherAgreeDraw', o=> {
+        this.socket.on('otherTryRegret', color=> {
+          this.tryAudioPlay(this.$refs.audioClick)
+          this.$refs.popup.$emit('popup', {
+            type: 'confirm',
+            text: '对方请求悔棋，是否同意？',
+            confirmText: '同意',
+            cancelText: '拒绝',
+            confirm: () => {
+              this.socket.emit('agreeRegret',color)
+              this.regret(color)
+            },
+            cancel: () => {
+              this.socket.emit('refuseRegret')
+              this.tryAudioPlay(this.$refs.audioClick)
+            }
+          })
+        })
+
+        this.socket.on('otherAgreeDraw', ()=> {
           this.tryAudioPlay(this.$refs.audioClick)
           this.$refs.popup.$emit('popup', {
             type: 'alert',
-            text: '对方同意你的求和。',
+            text: '对方同意你的悔棋。',
             confirm: () => {
               this.wing = 'draw'
               this.end()
+            },
+          })
+        })
+
+        this.socket.on('otherAgreeRegret', color=> {
+          this.tryAudioPlay(this.$refs.audioClick)
+          this.$refs.popup.$emit('popup', {
+            type: 'alert',
+            text: '对方同意你的悔棋。',
+            confirm: () => {
+              this.regret(color)
             },
           })
         })
@@ -269,6 +300,17 @@
           this.$refs.popup.$emit('popup', {
             type: 'alert',
             text: '对方拒绝你的求和。',
+            confirm: ()=>{
+              this.tryAudioPlay(this.$refs.audioClick)
+            }
+          })
+        })
+
+        this.socket.on('otherRefuseRegret', o=> {
+          this.tryAudioPlay(this.$refs.audioClick)
+          this.$refs.popup.$emit('popup', {
+            type: 'alert',
+            text: '对方拒绝你的悔棋。',
             confirm: ()=>{
               this.tryAudioPlay(this.$refs.audioClick)
             }
@@ -322,7 +364,7 @@
           // console.log(r,c,'已有落子')
           return
         }
-        this.chessmen[r][c].color = this.color
+        // this.chessmen[r][c].color = this.color
 
         this.tryAudioPlay(this.$refs.audioMove)
         
@@ -335,6 +377,7 @@
         this.chessmen[r][c].color = this.nowColor
         this.nowColor = this.toggleColor(this.nowColor)
         this.activeChess = [{r, c, color: this.nowColor}]
+        this.history.push([r,c])
       },
       givein() {
         if (this.stage =='playing') {
@@ -369,8 +412,44 @@
             }
           })
         }
-      }
+      },
+      tryRegret() {
+        if (this.stage =='playing' && this.history.length > 2 ) {
+          this.tryAudioPlay(this.$refs.audioClick)
+          this.$refs.popup.$emit('popup', {
+            type: 'confirm',
+            text: '你确定要悔棋吗？',
+            confirm: () => {
+              this.socket.emit('tryRegret', this.color)
+              this.tryAudioPlay(this.$refs.audioClick)
+            },
+            cancel: () => {
+              this.tryAudioPlay(this.$refs.audioClick)
+            }
+          })
+        }
+      },
+      regret(color) {
+        let regretCount = this.nowColor == color ? 2 : 1;
+        let regretChessmen = this.history.splice(-regretCount, regretCount)
 
+        // 将后退的步重置颜色
+        regretChessmen.forEach( item => {
+          this.chessmen[item[0]][item[1]].color = null
+        })
+
+        // 当前颜色
+        this.nowColor = color
+
+
+        let activeChess = this.history[this.history.length-1]
+        this.activeChess = [{
+          r: activeChess[0], 
+          c: activeChess[1], 
+          color: this.nowColor
+        }]
+
+      }
     }
   }
 </script>
