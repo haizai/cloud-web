@@ -16,17 +16,19 @@
     name: 'popup',
     data() {
       return {
-        type: '',
+        type: '', // confirm alert wait
         isShow: false,
         text: '',
         confirm: null,
         cancel: null,
         confirmText: '确定',
         cancelText: '取消',
+        confirmWaitText: null
       }
     },
     created() {
       this.$on('popup', o => {
+        this.reset()
         this.type = o.type
         this.text = o.text
         this.isShow = true
@@ -43,6 +45,11 @@
         if (o.cancelText) {
           this.cancelText = o.cancelText
         }
+
+        if (o.confirmWaitText) {
+          this.confirmWaitText = o.confirmWaitText
+        }
+
       })
     },
     methods: {
@@ -50,22 +57,27 @@
         if (this.confirm) {
           this.confirm()
         }
-        this.back()
+        if (this.confirmWaitText) {
+          this.text = this.confirmWaitText
+          this.type = 'wait'
+        } else {
+          this.isShow = false
+        }
       },
       no() {
         if (this.cancel) {
           this.cancel()
         }
-        this.back()
-      },
-      back() {
-        this.text = ''
         this.isShow = false
+      },
+      reset() {
+        this.text = ''
         this.fn = null
         this.confirmText = '确定'
         this.cancelText = '取消'
         this.confirm = null
         this.cancel = null
+        this.confirmWaitText = null
       }
     }
   }

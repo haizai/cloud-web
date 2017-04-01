@@ -223,7 +223,6 @@
         })
 
         this.socket.on('otherGivein', ()=> {
-          this.tryAudioPlay(this.$refs.audioClick)
           this.$refs.popup.$emit('popup', {
             type: 'alert',
             text: '对方投子认负，你赢了！',
@@ -233,10 +232,10 @@
               this.end()
             }
           })
+          this.tryAudioPlay(this.$refs.audioClick)
         })
 
         this.socket.on('otherTryDraw', ()=> {
-          this.tryAudioPlay(this.$refs.audioClick)
           this.$refs.popup.$emit('popup', {
             type: 'confirm',
             text: '对方求和，是否同意？',
@@ -252,10 +251,10 @@
               this.tryAudioPlay(this.$refs.audioClick)
             }
           })
+          this.tryAudioPlay(this.$refs.audioClick)
         })
 
         this.socket.on('otherTryRegret', color=> {
-          this.tryAudioPlay(this.$refs.audioClick)
           this.$refs.popup.$emit('popup', {
             type: 'confirm',
             text: '对方请求悔棋，是否同意？',
@@ -270,22 +269,22 @@
               this.tryAudioPlay(this.$refs.audioClick)
             }
           })
+          this.tryAudioPlay(this.$refs.audioClick)
         })
 
         this.socket.on('otherAgreeDraw', ()=> {
-          this.tryAudioPlay(this.$refs.audioClick)
           this.$refs.popup.$emit('popup', {
             type: 'alert',
-            text: '对方同意你的悔棋。',
+            text: '对方同意你的和棋。',
             confirm: () => {
               this.wing = 'draw'
               this.end()
             },
           })
+          this.tryAudioPlay(this.$refs.audioClick)
         })
 
         this.socket.on('otherAgreeRegret', color=> {
-          this.tryAudioPlay(this.$refs.audioClick)
           this.$refs.popup.$emit('popup', {
             type: 'alert',
             text: '对方同意你的悔棋。',
@@ -293,10 +292,10 @@
               this.regret(color)
             },
           })
+          this.tryAudioPlay(this.$refs.audioClick)
         })
 
         this.socket.on('otherRefuseDraw', o=> {
-          this.tryAudioPlay(this.$refs.audioClick)
           this.$refs.popup.$emit('popup', {
             type: 'alert',
             text: '对方拒绝你的求和。',
@@ -304,6 +303,7 @@
               this.tryAudioPlay(this.$refs.audioClick)
             }
           })
+          this.tryAudioPlay(this.$refs.audioClick)
         })
 
         this.socket.on('otherRefuseRegret', o=> {
@@ -381,7 +381,7 @@
       },
       givein() {
         if (this.stage =='playing') {
-          this.tryAudioPlay(this.$refs.audioClick)
+          
           this.$refs.popup.$emit('popup', {
             type: 'confirm',
             text: '你确定要认输吗？',
@@ -395,11 +395,11 @@
               this.tryAudioPlay(this.$refs.audioClick)
             }
           })
+          this.tryAudioPlay(this.$refs.audioClick)
         }
       },
       tryDraw() {
         if (this.stage =='playing') {
-          this.tryAudioPlay(this.$refs.audioClick)
           this.$refs.popup.$emit('popup', {
             type: 'confirm',
             text: '你确定要求和吗？',
@@ -407,15 +407,16 @@
               this.socket.emit('tryDraw')
               this.tryAudioPlay(this.$refs.audioClick)
             },
+            confirmWaitText: '等待对面回应...',
             cancel: () => {
               this.tryAudioPlay(this.$refs.audioClick)
-            }
+            },
           })
+          this.tryAudioPlay(this.$refs.audioClick)
         }
       },
       tryRegret() {
         if (this.stage =='playing' && this.history.length > 2 ) {
-          this.tryAudioPlay(this.$refs.audioClick)
           this.$refs.popup.$emit('popup', {
             type: 'confirm',
             text: '你确定要悔棋吗？',
@@ -423,10 +424,12 @@
               this.socket.emit('tryRegret', this.color)
               this.tryAudioPlay(this.$refs.audioClick)
             },
+            confirmWaitText: '等待对面回应...',
             cancel: () => {
               this.tryAudioPlay(this.$refs.audioClick)
             }
           })
+          this.tryAudioPlay(this.$refs.audioClick)
         }
       },
       regret(color) {
