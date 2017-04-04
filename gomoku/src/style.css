@@ -16,8 +16,9 @@ table { border-collapse: collapse; border-spacing: 0; }
   position: relative;
 }
 
-#gomoku {
+.outline-container {
   width: 640px;
+  margin: 0 auto;
 }
 .now {
   text-align: center;
@@ -208,4 +209,28 @@ i {
 .popup-btn.cancel:hover {
   color: #000;
   border-color: #555;
+}
+
+
+.big-btn {
+  display: inline-block;
+  width: 200px;
+  padding: 20px;
+  font-size: 18px;
+  color: #29AAD4;
+  text-align: center;
+  border-radius: 10px;
+  border: 2px solid #29AAD4;
+  margin-top: 150px;
+  margin-left: 150px;
+  transition: all .3s;
+}
+.big-btn:hover {
+  background: #29AAD4;
+  color: #fff;
+}
+.title {
+  text-align: center;
+  font-size: 24px;
+  margin-top: 50px;
 }

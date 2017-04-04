@@ -1,6 +1,6 @@
 <template>
   
-<div class="container">
+<div>
   <Popup ref="popup"></Popup>
   <h1 @click="log()">room</h1>
 

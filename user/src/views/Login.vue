@@ -52,7 +52,7 @@
                 tip('自动登录成功')
                 this.$router.push({name:'center'})
               } else {
-                window.localStorage.remove('haizai_password')
+                window.localStorage.removeItem('haizai_password')
               }
             })
           }

@@ -2,7 +2,7 @@
   
 <div>
 
-  <div id="gomoku">
+  <div class="outline-container">
     <p class="now">{{tip}}</p>
     <div class="chessboard">
       <i 
