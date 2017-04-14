@@ -199,6 +199,10 @@
           }
         })
 
+        this.socket.on('init', o=> {
+          alert('房间重置')
+          this.$router.push({name: 'online'})
+        })
 
         this.socket.on('user', o=> {
           console.log('user',o)
