@@ -372,6 +372,12 @@
         }
 
 
+        function positionScore(r,c) {
+          let _r = Math.abs(+r - 8)
+          let _c = Math.abs(+c - 8)
+          return Math.min((7-_r),(7-_c))
+        }
+
         function ifAIMoveInNullChessmen(nullChessmen, chessmen, color,regs){
 
           let scoreArr = []
@@ -388,7 +394,9 @@
             let txtArr2 = getTxtArr(newOtherChessmen)
             let score2 = txtArrByRegsToScore(txtArr2,toggleColor(color), regs)
 
-            scoreArr.push(score + score2 * 1.1)
+            let trueScore = positionScore(r,c) + score + score2 * 1.1
+
+            scoreArr.push(trueScore)
           })
 
 
