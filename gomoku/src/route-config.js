@@ -2,6 +2,7 @@ import Online from './views/Online.vue'
 import Outline from './views/Outline.vue'
 import Index from './views/Index.vue'
 import Room from './views/Room.vue'
+import Ai from './views/Ai.vue'
 
 
 export default [
@@ -24,6 +25,11 @@ export default [
       name: 'outline',
       path: '/outline',
       component: Outline
+    },
+    {
+      name: 'ai',
+      path: '/ai',
+      component: Ai
     },
   ]
 
