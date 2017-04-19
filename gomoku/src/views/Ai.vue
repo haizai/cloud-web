@@ -397,15 +397,19 @@
 
         function ifAIMoveInNullChessmen(nullChessmen, chessmen, color,regs){
 
+
           let scoreArr = []
           let otherColor = toggleColor(color)
+          let length = nullChessmen.length
 
 
+          let alpha = -1000000
+          let nowR = 0;
+          let nowC = 0;
+          let beta = 1000000
 
-          nullChessmen.forEach((chess)=>{
-
-            let r1 = chess[0], c1 = chess[1]
-
+          for (let i1 = 0; i1 < length; i1++) {
+            let r1 = nullChessmen[i1][0], c1 = nullChessmen[i1][1]
 
             // 超过棋子两个以外的忽略
             let isNeedComputer = false
@@ -424,37 +428,44 @@
 
 
             if (isNeedComputer) {
-              let scoreArr2 = []
-              nullChessmen.forEach((chess2)=>{
-                let r2 = chess2[0], c2 = chess2[1]
+
+              beta = 1000000
+              for (let i2 = 0; i2 < length; i2++) {
+                let r2 = nullChessmen[i2][0], c2 = nullChessmen[i2][1]
                 let newChessArr = [
                   [r1,c1,color],
                   [r2,c2,otherColor]
                 ]
 
                 if (r2!==r1 && c2!==c1) {
-                  let score = chessmenIfMove(chessmen, newChessArr, color, regs)
-                  scoreArr2.push(score)
+                  let score = chessmenIfMove(chessmen, newChessArr, color, regs) + positionScore(r1,c1)
 
+                  // if (i2 === 0) {
+                  //   beta = score
+                  // }
+
+                  if (score<beta) {
+                    beta = score
+                  }
+                  if (score <= alpha) {
+                    break;
+                  }
                 }
-              })
+                
+              }
 
-              let trueScore2 = Math.min.apply(null,scoreArr2)
-              scoreArr.push(trueScore2 + positionScore(r1,c1))
-            } else {
-              scoreArr.push(-1000000)
+              if (alpha < beta) {
+                alpha = beta
+                nowR = r1
+                nowC = c1
+              }
+
+
             }
-            
-          })
 
+          }
 
-          let trueScore = Math.max.apply(null,scoreArr)
-
-          let index = scoreArr.indexOf(trueScore)
-
-          let trueChess = nullChessmen[index]
-
-          return trueChess
+          return [nowR,nowC]
         }
 
 
