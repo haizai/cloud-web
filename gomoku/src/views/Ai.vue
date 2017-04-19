@@ -155,7 +155,7 @@
             _n01110n: [/[wn]0bbb0[wn]/g,'sleep3'],
             _00110: [/([wn0]00bb0[wn0]|[wn0]0bb00[wn0])/g,'live2'], //活二,能够形成活三的二
             _01010: [/[wn0]0b0b0[wn0]/g,'live2'],
-            // _010010: [/[wn0]0b00b0[wn0]/g,'live2'],
+            _010010: [/[wn0]0b00b0[wn0]/g,'live2'],
             _00011n: [/(000bb[wn]|[wn]bb000)/g,'sleep2'], //眠二,能够形成眠三的二
             _00101n: [/(00b0b[wn]|[wn]b0b00)/g,'sleep2'],
             _01001n: [/(0b00b[wn]|[wn]b00b0)/g,'sleep2'],
@@ -182,7 +182,7 @@
             _n01110n: [/[bn]0www0[bn]/g,'sleep3'],
             _00110: [/([bn0]00ww0[bn0]|[bn0]0ww00[bn0])/g,'live2'], //活二,能够形成活三的二
             _01010: [/[bn0]0w0w0[bn0]/g,'live2'],
-            // _010010: [/[bn0]0w00w0[bn0]/g,'live2'],
+            _010010: [/[bn0]0w00w0[bn0]/g,'live2'],
             _00011n: [/(000ww[bn]|[bn]ww000)/g,'sleep2'], //眠二,能够形成眠三的二
             _00101n: [/(00w0w[bn]|[bn]w0w00)/g,'sleep2'],
             _01001n: [/(0w00w[bn]|[bn]w00w0)/g,'sleep2'],
@@ -253,7 +253,7 @@
           function scoreComputedByTypeObj(obj) {
             let score = 0
 
-            //双冲4
+            // 双冲4
             // if (obj.lash4 >= 2) {
             //   score += 10000
             //   // obj.lash4 -= 2
@@ -381,28 +381,43 @@
         function ifAIMoveInNullChessmen(nullChessmen, chessmen, color,regs){
 
           let scoreArr = []
+          let otherColor = toggleColor(color)
 
-          nullChessmen.forEach((chess,index)=>{
+
+          nullChessmen.forEach((chess)=>{
             let newChessmen = JSON.parse(JSON.stringify(chessmen))
             let r = chess[0], c = chess[1]
             newChessmen[r][c].color = color
-            let txtArr = getTxtArr(newChessmen)
-            let score = txtArrByRegsToScore(txtArr,color, regs)
 
-            let newOtherChessmen = JSON.parse(JSON.stringify(chessmen))
-            newOtherChessmen[r][c].color = toggleColor(color)
-            let txtArr2 = getTxtArr(newOtherChessmen)
-            let score2 = txtArrByRegsToScore(txtArr2,toggleColor(color), regs)
 
-            let trueScore = positionScore(r,c) + score + score2 * 1.1
 
-            scoreArr.push(trueScore)
+            let scoreArr2 = []
+            nullChessmen.forEach((chess2)=>{
+              if (chess2[0]!==r && chess2[1]!==c) {
+                let newChessmen2 = JSON.parse(JSON.stringify(newChessmen))
+                let r2 = chess2[0], c2 = chess2[1]
+                newChessmen2[r2][c2].color = otherColor
+
+                let txtArr2 = getTxtArr(newChessmen2)
+                let score2 = txtArrByRegsToScore(txtArr2,color, regs)
+                scoreArr2.push(score2)
+
+
+                if (r == 7 && c ==7) {
+                  console.log(score2,r2,c2)
+                }
+
+              }
+            })
+            let trueScore2 = Math.min.apply(null,scoreArr2)
+            scoreArr.push(trueScore2 + positionScore(r,c))
+
           })
 
 
-          let maxScore = Math.max.apply(null,scoreArr)
+          let trueScore = Math.max.apply(null,scoreArr)
 
-          let index = scoreArr.indexOf(maxScore)
+          let index = scoreArr.indexOf(trueScore)
 
           let trueChess = nullChessmen[index]
 
