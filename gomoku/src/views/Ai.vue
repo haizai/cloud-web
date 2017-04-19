@@ -378,13 +378,96 @@
           return Math.min((7-_r),(7-_c))
         }
 
+
+        // 如果落若干子，计算此时得分
+        function chessmenIfMove(chessmen, newChessArr, color, regs) {
+          let newChessmen = JSON.parse(JSON.stringify(chessmen))
+
+          newChessArr.forEach(chess=>{
+            let r = chess[0], c = chess[1]
+            newChessmen[r][c].color = chess[2]
+          })
+
+          let txtArr = getTxtArr(newChessmen)
+
+          let score = txtArrByRegsToScore(txtArr,color, regs)
+
+          return score
+        }
+
         function ifAIMoveInNullChessmen(nullChessmen, chessmen, color,regs){
 
           let scoreArr = []
           let otherColor = toggleColor(color)
 
 
+
           nullChessmen.forEach((chess)=>{
+
+            let r1 = chess[0], c1 = chess[1]
+
+
+            // 超过棋子两个以外的忽略
+            let isNeedComputer = false
+            let _r_min =  +r1-2 > 0 ? +r1-2 : 1
+            let _r_max =  +r1+2 < 16 ? +r1+2 : 15
+            let _c_min =  +c1-2 > 0 ? +c1-2 : 1
+            let _c_max =  +c1+2 < 16 ? +c1+2 : 15
+            for (let _r = _r_min; _r <=_r_max; _r++) {
+              for (let _c = _c_min; _c <=_c_max; _c++) {
+
+                if (chessmen[_r][_c].color != null) {
+                  isNeedComputer = true
+                } 
+              }
+            }
+
+
+            if (isNeedComputer) {
+              let scoreArr2 = []
+              nullChessmen.forEach((chess2)=>{
+                let r2 = chess2[0], c2 = chess2[1]
+                let newChessArr = [
+                  [r1,c1,color],
+                  [r2,c2,otherColor]
+                ]
+
+                if (r2!==r1 && c2!==c1) {
+                  let score = chessmenIfMove(chessmen, newChessArr, color, regs)
+                  scoreArr2.push(score)
+
+                }
+              })
+
+              let trueScore2 = Math.min.apply(null,scoreArr2)
+              scoreArr.push(trueScore2 + positionScore(r1,c1))
+            } else {
+              scoreArr.push(-1000000)
+            }
+            
+          })
+
+
+          let trueScore = Math.max.apply(null,scoreArr)
+
+          let index = scoreArr.indexOf(trueScore)
+
+          let trueChess = nullChessmen[index]
+
+          return trueChess
+        }
+
+
+
+        function __ifAIMoveInNullChessmen(nullChessmen, chessmen, color,regs){
+
+          let scoreArr = []
+          let otherColor = toggleColor(color)
+
+
+
+          nullChessmen.forEach((chess)=>{
+            
             let newChessmen = JSON.parse(JSON.stringify(chessmen))
             let r = chess[0], c = chess[1]
             newChessmen[r][c].color = color
@@ -402,11 +485,6 @@
                 let score2 = txtArrByRegsToScore(txtArr2,color, regs)
                 scoreArr2.push(score2)
 
-
-                if (r == 7 && c ==7) {
-                  console.log(score2,r2,c2)
-                }
-
               }
             })
             let trueScore2 = Math.min.apply(null,scoreArr2)
@@ -423,6 +501,8 @@
 
           return trueChess
         }
+
+
 
 
         // let txtArr = getTxtArr(chessmen)
@@ -534,7 +614,9 @@
           this.toggleColor()
 
           if (this.color == 'w') {
+            console.time()
             let AIChess = this.AI()
+            console.timeEnd()
             this.move(AIChess[0],AIChess[1], 'w')
           }
         }
