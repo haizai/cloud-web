@@ -3,7 +3,7 @@
 <div>
 
   <div class="outline-container">
-    <p class="now">{{tip}}</p>
+    <p class="now">{{tip}} {{tipS}}</p>
     <div class="chessboard">
       <i 
         class="icon-sound"
@@ -79,7 +79,7 @@
         wingChess:[],
         history: [],
         backgroundAudio: true, //
-
+        tipS: '',
       }
     },
     computed:{
@@ -254,38 +254,38 @@
             let score = 0
 
             // 双冲4
-            // if (obj.lash4 >= 2) {
-            //   score += 10000
-            //   // obj.lash4 -= 2
-            // }
-            // //冲4活3
-            // if (obj.lash4 >= 1 && obj.live3 >= 1) {
-            //   score += 10000
-            //   // obj.lash4--
-            //   // obj.live3--
-            // }
-            // //双活3
-            // if (obj.live3 >= 2) {
-            //   score += 5000
-            //   // obj.live3 -= 2
-            // }
-            // //活3眠3
-            // if (obj.live3 >= 1 && obj.sleep3 >= 1) {
-            //   score += 1000
-            //   // obj.live3--
-            //   // obj.sleep3--
-            // }
-            // //双活2
-            // if (obj.live2 >= 2) {
-            //   score += 100
-            //   // obj.live2-=2
-            // }
-            // //活2眠2
-            // if (obj.live2>=1 && obj.sleep2>=1 ) {
-            //   score += 10
-            //   // obj.live2--
-            //   // obj.sleep2--
-            // }
+            if (obj.lash4 >= 2) {
+              score += 10000
+              obj.lash4 -= 2
+            }
+            //冲4活3
+            if (obj.lash4 >= 1 && obj.live3 >= 1) {
+              score += 10000
+              obj.lash4--
+              obj.live3--
+            }
+            //双活3
+            if (obj.live3 >= 2) {
+              score += 5000
+              obj.live3 -= 2
+            }
+            //活3眠3
+            if (obj.live3 >= 1 && obj.sleep3 >= 1) {
+              score += 1000
+              obj.live3--
+              obj.sleep3--
+            }
+            //双活2
+            if (obj.live2 >= 2) {
+              score += 100
+              obj.live2-=2
+            }
+            //活2眠2
+            if (obj.live2>=1 && obj.sleep2>=1 ) {
+              score += 10
+              obj.live2--
+              obj.sleep2--
+            }
 
             let singleScore = {
               long: 100000,
@@ -408,21 +408,27 @@
           let nowC = 0;
           let beta = 1000000
 
+
+
           for (let i1 = 0; i1 < length; i1++) {
             let r1 = nullChessmen[i1][0], c1 = nullChessmen[i1][1]
 
-            // 超过棋子两个以外的忽略
-            let isNeedComputer = false
-            let _r_min =  +r1-2 > 0 ? +r1-2 : 1
-            let _r_max =  +r1+2 < 16 ? +r1+2 : 15
-            let _c_min =  +c1-2 > 0 ? +c1-2 : 1
-            let _c_max =  +c1+2 < 16 ? +c1+2 : 15
-            for (let _r = _r_min; _r <=_r_max; _r++) {
-              for (let _c = _c_min; _c <=_c_max; _c++) {
 
-                if (chessmen[_r][_c].color != null) {
-                  isNeedComputer = true
-                } 
+            let isNeedComputer = true
+            if (length > 150) {
+              // 超过棋子两个以外的忽略
+              isNeedComputer = false
+              let _r_min =  +r1-2 > 0 ? +r1-2 : 1
+              let _r_max =  +r1+2 < 16 ? +r1+2 : 15
+              let _c_min =  +c1-2 > 0 ? +c1-2 : 1
+              let _c_max =  +c1+2 < 16 ? +c1+2 : 15
+              for (let _r = _r_min; _r <=_r_max; _r++) {
+                for (let _c = _c_min; _c <=_c_max; _c++) {
+
+                  if (chessmen[_r][_c].color != null) {
+                    isNeedComputer = true
+                  }
+                }
               }
             }
 
@@ -439,10 +445,6 @@
 
                 if (r2!==r1 && c2!==c1) {
                   let score = chessmenIfMove(chessmen, newChessArr, color, regs) + positionScore(r1,c1)
-
-                  // if (i2 === 0) {
-                  //   beta = score
-                  // }
 
                   if (score<beta) {
                     beta = score
@@ -468,57 +470,6 @@
           return [nowR,nowC]
         }
 
-
-
-        function __ifAIMoveInNullChessmen(nullChessmen, chessmen, color,regs){
-
-          let scoreArr = []
-          let otherColor = toggleColor(color)
-
-
-
-          nullChessmen.forEach((chess)=>{
-            
-            let newChessmen = JSON.parse(JSON.stringify(chessmen))
-            let r = chess[0], c = chess[1]
-            newChessmen[r][c].color = color
-
-
-
-            let scoreArr2 = []
-            nullChessmen.forEach((chess2)=>{
-              if (chess2[0]!==r && chess2[1]!==c) {
-                let newChessmen2 = JSON.parse(JSON.stringify(newChessmen))
-                let r2 = chess2[0], c2 = chess2[1]
-                newChessmen2[r2][c2].color = otherColor
-
-                let txtArr2 = getTxtArr(newChessmen2)
-                let score2 = txtArrByRegsToScore(txtArr2,color, regs)
-                scoreArr2.push(score2)
-
-              }
-            })
-            let trueScore2 = Math.min.apply(null,scoreArr2)
-            scoreArr.push(trueScore2 + positionScore(r,c))
-
-          })
-
-
-          let trueScore = Math.max.apply(null,scoreArr)
-
-          let index = scoreArr.indexOf(trueScore)
-
-          let trueChess = nullChessmen[index]
-
-          return trueChess
-        }
-
-
-
-
-        // let txtArr = getTxtArr(chessmen)
-        // let typeObj = txtArrByRegs(txtArr, regs)
-        // let score = scoreComputedByTypeObj(typeObj)
 
         let nullChessmen = getNullChessmen(chessmen)
 
@@ -626,8 +577,9 @@
 
           if (this.color == 'w') {
             console.time()
+            let now = Date.now()
             let AIChess = this.AI()
-            console.timeEnd()
+            this.tipS = ' AI用时 ' + ((Date.now() - now)/1000).toFixed(1) + ' 秒'
             this.move(AIChess[0],AIChess[1], 'w')
           }
         }
