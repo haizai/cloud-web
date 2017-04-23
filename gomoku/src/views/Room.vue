@@ -180,6 +180,7 @@
           audio.play()
         } catch(e) {
           console.log('error tryAudioPlay',e);
+          alert('音效BUG，请重开浏览器，并重置房间')
         }
       },
       toggleColor(color) {
@@ -205,7 +206,7 @@
         })
 
         this.socket.on('user', o=> {
-          console.log('user',o)
+          // console.log('user',o)
           this.color = o.color
           this.me = o.me
           this.other = o.other
@@ -221,7 +222,7 @@
         })
 
         this.socket.on('otherMove', o=> {
-          console.log('otherMove',o)
+          // console.log('otherMove',o)
           this.tryAudioPlay(this.$refs.audioMove)
           this.showMove(o.r, o.c)
         })

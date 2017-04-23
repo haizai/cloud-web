@@ -1,7 +1,8 @@
 <template>
   <div>  
     <h2 class="title">五子棋</h2> 
-    <a class="big-btn" href="javascript:;" @click="$router.push({name:'outline'})">单机模式</a>
+    <a class="big-btn" href="javascript:;" @click="$router.push({name:'outline'})">单机模式（无AI）</a>
+    <a class="big-btn" href="javascript:;" @click="$router.push({name:'ai'})">人机对战（有AI）</a>
     <a class="big-btn" href="javascript:;" @click="online">联机对战</a>
   </div>
 </template>

@@ -253,39 +253,39 @@
           function scoreComputedByTypeObj(obj) {
             let score = 0
 
-            // 双冲4
-            if (obj.lash4 >= 2) {
-              score += 10000
-              obj.lash4 -= 2
-            }
-            //冲4活3
-            if (obj.lash4 >= 1 && obj.live3 >= 1) {
-              score += 10000
-              obj.lash4--
-              obj.live3--
-            }
-            //双活3
-            if (obj.live3 >= 2) {
-              score += 5000
-              obj.live3 -= 2
-            }
-            //活3眠3
-            if (obj.live3 >= 1 && obj.sleep3 >= 1) {
-              score += 1000
-              obj.live3--
-              obj.sleep3--
-            }
-            //双活2
-            if (obj.live2 >= 2) {
-              score += 100
-              obj.live2-=2
-            }
-            //活2眠2
-            if (obj.live2>=1 && obj.sleep2>=1 ) {
-              score += 10
-              obj.live2--
-              obj.sleep2--
-            }
+            // // 双冲4
+            // if (obj.lash4 >= 2) {
+            //   score += 10000
+            //   obj.lash4 -= 2
+            // }
+            // //冲4活3
+            // if (obj.lash4 >= 1 && obj.live3 >= 1) {
+            //   score += 10000
+            //   obj.lash4--
+            //   obj.live3--
+            // }
+            // //双活3
+            // if (obj.live3 >= 2) {
+            //   score += 5000
+            //   obj.live3 -= 2
+            // }
+            // //活3眠3
+            // if (obj.live3 >= 1 && obj.sleep3 >= 1) {
+            //   score += 1000
+            //   obj.live3--
+            //   obj.sleep3--
+            // }
+            // //双活2
+            // if (obj.live2 >= 2) {
+            //   score += 100
+            //   obj.live2-=2
+            // }
+            // //活2眠2
+            // if (obj.live2>=1 && obj.sleep2>=1 ) {
+            //   score += 10
+            //   obj.live2--
+            //   obj.sleep2--
+            // }
 
             let singleScore = {
               long: 100000,
@@ -576,7 +576,7 @@
           this.toggleColor()
 
           if (this.color == 'w') {
-            console.time()
+            // console.time()
             let now = Date.now()
             let AIChess = this.AI()
             this.tipS = ' AI用时 ' + ((Date.now() - now)/1000).toFixed(1) + ' 秒'

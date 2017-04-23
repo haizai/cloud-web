@@ -38,7 +38,7 @@
           location = '/user#/login'
         } else {
 
-          console.log('已登录')
+          // console.log('已登录')
 
           this.$http.get(this.urlPrefix+'ajax/user/getUserInCenter').then(res => {
             if (res.body.state == 1 && res.body.user.position == 'admin') {
