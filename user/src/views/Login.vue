@@ -13,7 +13,7 @@
         <input type="checkbox" id="autoLogin" v-model="autoLogin"><label for="autoLogin">下次自动登录</label>
       </div>
       <div class="login-line">
-        <a href="javascript:;" class="login-btn login-submit" @click="login()">登入</a>
+        <a href="javascript:;" class="login-btn login-submit" @click="login()">登录</a>
         <a href="javascript:;" class="login-btn login-other"  @click="$router.push({name: 'register'})">注册</a>
       </div>
     </div>
@@ -78,12 +78,12 @@
       },
       login() {
         this.saveAccount ? window.localStorage.setItem('haizai_account',this.account) : window.localStorage.removeItem('haizai_account')
-        tip('登入中...','info',500)
+        tip('登录中...','info',500)
         this.$http.get(this.urlPrefix+'login',{params:{account:this.account,password:this.password}}).then(res => {
           switch (res.body.state) {
             case 1:
               this.autoLogin ? window.localStorage.setItem('haizai_password',this.password) : window.localStorage.removeItem('haizai_password')
-              tip('登入成功，即将自动转跳')
+              tip('登录成功，即将自动转跳')
               setTimeout(()=>{
                 this.$router.push({name: 'center'})
               }, 1000)
